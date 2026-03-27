@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:example.com)",
+      "Skill(update-config)",
+      "Read(//f/android_workplace/Test/**)",
+      "Read(//c/Users/gzh20/**)",
+      "Bash(node:*)",
+      "Bash(git init:*)",
+      "Skill(gsd:discuss-phase)"
+    ]
+  }
+}
