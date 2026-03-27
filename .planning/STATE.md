@@ -14,9 +14,9 @@
 ## Phase Progress
 
 ### Phase 1: Core Blog
-- Status: Pending
-- Started: —
-- Completed: —
+- Status: Complete
+- Started: 2026-03-28
+- Completed: 2026-03-28
 - Blockers: None
 
 ### Phase 2: Organization
@@ -35,13 +35,13 @@
 
 | ID | Requirement | Phase | Status |
 |----|-------------|-------|--------|
-| CONTENT-01 | Markdown posts with frontmatter | 1 | Pending |
-| CONTENT-02 | Code syntax highlighting | 1 | Pending |
-| CONTENT-03 | Draft mode | 1 | Pending |
-| CONTENT-04 | Image support | 1 | Pending |
-| DISPLAY-01 | Home page with post list | 1 | Pending |
-| DISPLAY-02 | Single post page | 1 | Pending |
-| DISPLAY-03 | Responsive design | 1 | Pending |
+| CONTENT-01 | Markdown posts with frontmatter | 1 | Complete |
+| CONTENT-02 | Code syntax highlighting | 1 | Complete |
+| CONTENT-03 | Draft mode | 1 | Complete |
+| CONTENT-04 | Image support | 1 | Complete |
+| DISPLAY-01 | Home page with post list | 1 | Complete |
+| DISPLAY-02 | Single post page | 1 | Complete |
+| DISPLAY-03 | Responsive design | 1 | Complete |
 | ORG-01 | Category pages | 2 | Pending |
 | ORG-02 | Tag pages | 2 | Pending |
 | ORG-03 | Archive by date | 2 | Pending |

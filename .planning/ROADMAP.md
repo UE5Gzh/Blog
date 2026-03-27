@@ -4,7 +4,7 @@
 
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
-| 1 | Core Blog | Functional blog with posts and code highlighting | CONTENT-01, CONTENT-02, CONTENT-03, CONTENT-04, DISPLAY-01, DISPLAY-02, DISPLAY-03 | 5 |
+| 1 | Core Blog | 1/1 | Complete   | 2026-03-27 |
 | 2 | Organization | Content discovery and navigation | ORG-01, ORG-02, ORG-03 | 4 |
 | 3 | Enhancements | User experience improvements | ENHANCE-01, ENHANCE-02, ENHANCE-03, ENHANCE-04 | 4 |
 
@@ -34,6 +34,12 @@
 - Add Shiki syntax highlighting
 - Add responsive CSS (mobile-first)
 - Configure image handling
+
+**Plans:** 1/1 plans complete
+
+**Plan list:**
+- [x] 01-core-blog/01-PLAN.md -- Foundation: Astro project setup, content schema, base layout
+- [x] 01-core-blog/02-PLAN.md -- Feature implementation: Home page cards, post page, code highlighting, responsive CSS
 
 ---
 
