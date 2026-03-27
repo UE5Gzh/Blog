@@ -8,7 +8,9 @@
       "Read(//c/Users/gzh20/**)",
       "Bash(node:*)",
       "Bash(git init:*)",
-      "Skill(gsd:discuss-phase)"
+      "Skill(gsd:discuss-phase)",
+      "Skill(gsd:plan-phase)",
+      "Skill(gsd:execute-phase)"
     ]
   }
 }
