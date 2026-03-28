@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Get all posts
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+
+// Sort by date descending
+const posts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Group posts by year, then by month
+const archive = posts.reduce((acc, post) => {
+  const year = post.data.date.getFullYear();
+  const month = post.data.date.getMonth();
+
+  if (!acc[year]) {
+    acc[year] = {};
+  }
+  if (!acc[year][month]) {
+    acc[year][month] = [];
+  }
+  acc[year][month].push(post);
+
+  return acc;
+}, {});
+
+// Get sorted years (descending)
+const years = Object.keys(archive).sort((a, b) => Number(b) - Number(a));
+---
+
+<BaseLayout title="Archive" description="Archive of all blog posts by date">
+  <section class="archive-header">
+    <h1>Archive</h1>
+    <p class="post-count">{posts.length} {posts.length === 1 ? 'post' : 'posts'} total</p>
+  </section>
+
+  <section class="archive-content">
+    {years.map(year => (
+      <div class="year-section">
+        <h2>{year}</h2>
+        {Object.keys(archive[year])
+          .sort((a, b) => Number(b) - Number(a))
+          .map(month => (
+            <div class="month-section">
+              <h3>{new Date(Number(year), Number(month), 1).toLocaleDateString('en-US', { month: 'long' })}</h3>
+              <ul class="post-list">
+                {archive[year][Number(month)].map(post => (
+                  <li>
+                    <a href={`/posts/${post.slug}`}>{post.data.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .archive-header {
+    text-align: center;
+    padding: var(--space-8) 0;
+    margin-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .archive-header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .post-count {
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+
+  .year-section {
+    margin-bottom: var(--space-8);
+  }
+
+  .year-section h2 {
+    font-size: 1.75rem;
+    color: var(--accent);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .month-section {
+    margin-bottom: var(--space-6);
+  }
+
+  .month-section h3 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .post-list li {
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .post-list li:last-child {
+    border-bottom: none;
+  }
+
+  .post-list a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .post-list a:hover {
+    color: var(--accent);
+  }
+</style>
