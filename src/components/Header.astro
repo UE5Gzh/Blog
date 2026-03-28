@@ -8,6 +8,33 @@ const { title } = Astro.props;
     <nav class="nav">
       <a href="/">Home</a>
       <a href="/about">About</a>
+
+      <!-- Categories Dropdown -->
+      <div class="dropdown">
+        <button class="dropdown-trigger" aria-haspopup="true">
+          Categories
+        </button>
+        <div class="dropdown-menu">
+          <a href="/categories/General">General</a>
+          <a href="/categories/Development">Development</a>
+        </div>
+      </div>
+
+      <!-- Tags Dropdown -->
+      <div class="dropdown">
+        <button class="dropdown-trigger" aria-haspopup="true">
+          Tags
+        </button>
+        <div class="dropdown-menu">
+          <a href="/tags/announcement">announcement</a>
+          <a href="/tags/meta">meta</a>
+          <a href="/tags/code">code</a>
+          <a href="/tags/testing">testing</a>
+        </div>
+      </div>
+
+      <!-- Archive Link -->
+      <a href="/archive">Archive</a>
     </nav>
   </div>
 </header>
@@ -40,15 +67,67 @@ const { title } = Astro.props;
   .nav {
     display: flex;
     gap: var(--space-4);
+    align-items: center;
   }
 
-  .nav a {
+  .nav a,
+  .dropdown-trigger {
     color: var(--text-secondary);
     font-size: 0.95rem;
+    text-decoration: none;
   }
 
-  .nav a:hover {
+  .nav a:hover,
+  .dropdown-trigger:hover,
+  .nav a:focus,
+  .dropdown-trigger:focus {
     color: var(--accent);
+  }
+
+  /* Dropdown Container */
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0;
+  }
+
+  /* Dropdown Menu - Hidden by default */
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.5rem;
+    background-color: #161b22;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    min-width: 160px;
+    padding: 0.5rem 0;
+    z-index: 100;
+  }
+
+  .dropdown-menu a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .dropdown-menu a:hover {
+    color: #58a6ff;
+    background-color: rgba(88, 166, 255, 0.1);
+  }
+
+  /* Show dropdown on hover or focus-within */
+  .dropdown:hover .dropdown-menu,
+  .dropdown:focus-within .dropdown-menu {
+    display: block;
   }
 
   @media (max-width: 640px) {
@@ -62,7 +141,29 @@ const { title } = Astro.props;
     }
 
     .nav {
+      flex-direction: column;
       gap: var(--space-3);
+      width: 100%;
+    }
+
+    .dropdown {
+      width: 100%;
+    }
+
+    .dropdown-trigger {
+      width: 100%;
+      text-align: center;
+    }
+
+    .dropdown-menu {
+      position: static;
+      margin-top: 0.5rem;
+      width: 100%;
+      box-shadow: none;
+    }
+
+    .dropdown-menu a {
+      text-align: center;
     }
   }
 </style>
