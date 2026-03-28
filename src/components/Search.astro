@@ -1,26 +1,36 @@
----
-// Pagefind UI wrapper component
-// Pagefind is a static search library that indexes the built HTML
-// Usage: <Search /> renders the Pagefind search UI
-// Note: Pagefind only works after build (npm run build), not in dev mode
----
-
 <div id="search" class="search-container"></div>
 
-<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+<script is:inline>
+  // Load Pagefind UI after page load - only when running in browser after build
+  (function() {
+    function initPagefind() {
+      // Check if pagefind is available (generated at build time)
+      if (document.querySelector('#search') && window.PagefindUI) {
+        new window.PagefindUI({
+          element: '#search',
+          showSubResults: true,
+          resetStyles: false,
+        });
+      }
+    }
 
-<script>
-  // @ts-ignore - Pagefind is injected at build time
-  import PagefindUI from '/pagefind/pagefind-ui.js';
+    // Load pagefind script if it exists
+    if (document.querySelector('#search')) {
+      var script = document.createElement('script');
+      script.src = '/pagefind/pagefind-ui.js';
+      script.onload = initPagefind;
+      script.onerror = function() {
+        // Pagefind not available (dev mode) - silently skip
+      };
+      document.head.appendChild(script);
 
-  window.addEventListener('DOMContentLoaded', () => {
-    // @ts-ignore
-    new PagefindUI({
-      element: '#search',
-      showSubResults: true,
-      resetStyles: false,
-    });
-  });
+      // Also load CSS
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/pagefind/pagefind-ui.css';
+      document.head.appendChild(link);
+    }
+  })();
 </script>
 
 <style>
