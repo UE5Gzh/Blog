@@ -8,93 +8,86 @@ interface Props {
 
 const { posts, currentSlug } = Astro.props;
 
-// Sort posts by date descending
-const sortedPosts = [...posts].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+// Sort posts by date (newest first)
+const sortedPosts = [...posts].sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
 
-// Find current post index
-const currentIndex = sortedPosts.findIndex(post => post.slug === currentSlug);
+// Find current index
+const currentIndex = sortedPosts.findIndex(p => p.slug === currentSlug);
 
-// Get previous and next posts
-const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
-const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+// Posts are sorted newest-first:
+// - posts[currentIndex + 1] = older post (appears before in list) = "previous"
+// - posts[currentIndex - 1] = newer post (appears after in list) = "next"
+const prevPost = sortedPosts[currentIndex + 1];
+const nextPost = sortedPosts[currentIndex - 1];
 ---
 
-<nav class="post-navigation">
-  <div class="nav-item prev">
-    {prevPost && (
-      <a href={`/posts/${prevPost.slug}`}>
-        <span class="nav-label">Previous</span>
-        <span class="nav-title">{prevPost.data.title}</span>
-      </a>
-    )}
-  </div>
-  <div class="nav-item next">
-    {nextPost && (
-      <a href={`/posts/${nextPost.slug}`}>
-        <span class="nav-label">Next</span>
-        <span class="nav-title">{nextPost.data.title}</span>
-      </a>
-    )}
-  </div>
-</nav>
+{(prevPost || nextPost) && (
+  <nav class="post-navigation">
+    <div class="nav-links">
+      {prevPost ? (
+        <a href={`/posts/${prevPost.slug}`} class="nav-link prev">
+          <span class="nav-label">Previous</span>
+          <span class="nav-title">{prevPost.data.title}</span>
+        </a>
+      ) : <div />}
+      {nextPost ? (
+        <a href={`/posts/${nextPost.slug}`} class="nav-link next">
+          <span class="nav-label">Next</span>
+          <span class="nav-title">{nextPost.data.title}</span>
+        </a>
+      ) : <div />}
+    </div>
+  </nav>
+)}
 
 <style>
   .post-navigation {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-links {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border, #e5e5e5);
+    gap: var(--space-4);
   }
 
-  .nav-item {
+  .nav-link {
     display: flex;
+    flex-direction: column;
+    padding: var(--space-4);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
   }
 
-  .nav-item.prev {
-    justify-content: flex-start;
+  .nav-link:hover {
+    border-color: var(--accent);
   }
 
-  .nav-item.next {
-    justify-content: flex-end;
+  .nav-link.next {
     text-align: right;
   }
 
-  .nav-item a {
-    text-decoration: none;
-    color: inherit;
-    max-width: 250px;
-  }
-
-  .nav-item a:hover .nav-title {
-    color: var(--accent, #3b82f6);
-  }
-
   .nav-label {
-    display: block;
     font-size: 0.75rem;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-secondary);
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--space-1);
   }
 
   .nav-title {
-    display: block;
+    color: var(--accent);
     font-weight: 500;
-    color: var(--text-primary);
-    transition: color 0.2s;
   }
 
   @media (max-width: 640px) {
-    .post-navigation {
+    .nav-links {
       grid-template-columns: 1fr;
-    }
-
-    .nav-item.next {
-      justify-content: flex-start;
-      text-align: left;
     }
   }
 </style>
