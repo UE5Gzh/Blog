@@ -1,91 +1,67 @@
 ---
-// This is a JavaScript-only file that exports a function
-// It will be used via a script tag in PostLayout
+// This component injects copy buttons onto Shiki-highlighted code blocks.
+// Use: <script>import from this component> addCopyButtons();</script>
+// It must be imported as an inline script in PostLayout.
 ---
 
-<script is:inline>
-  // Export function to add copy buttons to all code blocks
+<script>
   function addCopyButtons() {
-    // Only run in browser
-    if (typeof document === 'undefined') return;
-
     // Find all pre elements inside article.post
-    const codeBlocks = document.querySelectorAll('article.post pre');
-
-    codeBlocks.forEach(pre => {
-      // Check if button already exists
+    document.querySelectorAll('article.post pre').forEach(pre => {
+      // Skip if already has a copy button
       if (pre.querySelector('.copy-button')) return;
 
       // Create copy button
       const button = document.createElement('button');
+      button.textContent = 'Copy';
       button.className = 'copy-button';
-      button.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-        </svg>
-      `;
-      button.setAttribute('aria-label', 'Copy code');
+      button.setAttribute('aria-label', 'Copy code to clipboard');
 
-      // Style the button
-      button.style.cssText = `
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        padding: 0.25rem 0.5rem;
-        background: var(--surface-secondary, #f5f5f5);
-        border: 1px solid var(--border, #e5e5e5);
-        border-radius: 4px;
-        cursor: pointer;
-        opacity: 0;
-        transition: opacity 0.2s, background 0.2s;
-      `;
-
-      // Show button on hover
+      // Position the pre relatively so button can be absolute-positioned
       pre.style.position = 'relative';
-      pre.addEventListener('mouseenter', () => {
-        button.style.opacity = '1';
-      });
-      pre.addEventListener('mouseleave', () => {
-        button.style.opacity = '0';
-      });
-
-      // Handle copy action
-      button.addEventListener('click', async () => {
-        const code = pre.querySelector('code');
-        const text = code ? code.textContent : pre.textContent;
-
-        try {
-          await navigator.clipboard.writeText(text);
-          button.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-          `;
-          button.style.background = 'var(--success, #22c55e)';
-          button.style.color = 'white';
-          button.style.borderColor = 'var(--success, #22c55e)';
-
-          setTimeout(() => {
-            button.innerHTML = `
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-            `;
-            button.style.background = '';
-            button.style.color = '';
-            button.style.borderColor = '';
-          }, 2000);
-        } catch (err) {
-          console.error('Failed to copy:', err);
-        }
-      });
-
       pre.appendChild(button);
+
+      // Add click handler
+      button.addEventListener('click', () => {
+        const code = pre.querySelector('code');
+        const text = code?.textContent || '';
+        navigator.clipboard.writeText(text).then(() => {
+          button.textContent = 'Copied!';
+          setTimeout(() => {
+            button.textContent = 'Copy';
+          }, 2000);
+        }).catch(() => {
+          button.textContent = 'Error';
+          setTimeout(() => {
+            button.textContent = 'Copy';
+          }, 2000);
+        });
+      });
     });
   }
 
-  // Make available globally
-  window.addCopyButtons = addCopyButtons;
+  // Export for use in PostLayout
+  export { addCopyButtons };
 </script>
+
+<style>
+  .copy-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: inherit;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .copy-button:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+</style>
