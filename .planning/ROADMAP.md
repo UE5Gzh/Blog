@@ -66,6 +66,11 @@
 - Generate RSS feed with all published posts
 - Generate sitemap.xml
 
+**Plans:** 1/1 plans pending
+
+**Plan list:**
+- [ ] 02-organization/02-PLAN.md -- Foundation (RSS, sitemap, header dropdowns) + Content pages (category, tag, archive)
+
 ---
 
 ## Phase 3: Enhancements
