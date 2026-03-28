@@ -66,10 +66,10 @@
 - Generate RSS feed with all published posts
 - Generate sitemap.xml
 
-**Plans:** 2/1 plans complete
+**Plans:** 2/2 plans complete
 
 **Plan list:**
-- [ ] 02-organization/02-PLAN.md -- Foundation (RSS, sitemap, header dropdowns) + Content pages (category, tag, archive)
+- [x] 02-organization/02-PLAN.md -- Foundation (RSS, sitemap, header dropdowns) + Content pages (category, tag, archive)
 
 ---
 
@@ -92,8 +92,13 @@
 - Auto-generate table of contents from headings (H2, H3)
 - Calculate and display reading time per post
 - Add copy-to-clipboard button to code blocks
-- Add social sharing buttons (Twitter, LinkedIn)
 - Add "previous/next post" navigation
+
+**Plans:** 2/2 plans
+
+**Plan list:**
+- [x] 03-enhancements/03-01-PLAN.md -- Infrastructure: Install dependencies, create remark plugin, create 4 components
+- [x] 03-enhancements/03-02-PLAN.md -- Integration: Wire TOC, reading time, copy buttons, search into pages
 
 ---
 
