@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+// Get all posts
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+
+// Extract unique tags
+const tags = [...new Set(allPosts.flatMap(post => post.data.tags || []))];
+
+// Create paths for each tag
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+  const tags = [...new Set(allPosts.flatMap(post => post.data.tags || []))];
+
+  return tags.map(tag => {
+    const filteredPosts = allPosts
+      .filter(post => post.data.tags && post.data.tags.includes(tag))
+      .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+    return {
+      params: { tag },
+      props: { posts: filteredPosts, tag },
+    };
+  });
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`Tag: ${tag}`} description={`Posts tagged with: ${tag}`}>
+  <section class="tag-header">
+    <h1>Tag: {tag}</h1>
+    <p class="post-count">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+  </section>
+
+  <section class="posts-section">
+    {posts.length > 0 ? (
+      <div class="post-grid">
+        {posts.map(post => (
+          <PostCard post={post} />
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <h2>No posts with this tag</h2>
+        <p>Check back soon for new content!</p>
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .tag-header {
+    text-align: center;
+    padding: var(--space-8) 0;
+    margin-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tag-header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .post-count {
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+
+  .posts-section h2 {
+    margin-bottom: var(--space-6);
+  }
+</style>
