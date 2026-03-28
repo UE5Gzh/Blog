@@ -1,147 +1,202 @@
-/* Post/article typography styles */
+/* ================================
+   POST ARTICLE TYPOGRAPHY STYLES
+   ================================ */
 
 article.post {
-  max-width: 65ch;
-  margin: 0 auto;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
+/* Typography */
 article.post h1,
 article.post h2,
 article.post h3,
 article.post h4,
 article.post h5,
 article.post h6 {
+  line-height: 1.3;
   margin-top: 2em;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.75em;
+  color: var(--text-primary);
 }
 
-article.post h1 { font-size: 2rem; }
-article.post h2 { font-size: 1.5rem; }
-article.post h3 { font-size: 1.25rem; }
-
-/* Meta info (date, tags) */
-.post-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  align-items: center;
-  margin-bottom: var(--space-6);
-  padding-bottom: var(--space-4);
+article.post h1 { font-size: 2rem; font-weight: 700; }
+article.post h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding-bottom: 0.5em;
   border-bottom: 1px solid var(--border);
-  color: var(--text-secondary);
-  font-size: 0.875rem;
+}
+article.post h3 { font-size: 1.25rem; font-weight: 600; }
+article.post h4 { font-size: 1.1rem; font-weight: 500; }
+
+/* Paragraphs */
+article.post p {
+  margin-bottom: 1.5em;
 }
 
-.post-meta time {
-  display: inline-flex;
-  align-items: center;
-}
-
-.post-meta .tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.post-meta .tag {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  background-color: var(--bg-code);
-  color: var(--accent);
-  border-radius: var(--radius-sm);
-}
-
-/* Post content styles */
-.post-content {
-  margin-top: var(--space-8);
-}
-
-.post-content p {
-  margin-bottom: var(--space-4);
-}
-
-.post-content ul,
-.post-content ol {
-  margin-bottom: var(--space-4);
+/* Lists */
+article.post ul,
+article.post ol {
+  margin-bottom: 1.5em;
   padding-left: 1.5rem;
 }
 
-.post-content li {
-  margin-bottom: var(--space-2);
+article.post li {
+  margin-bottom: 0.5em;
 }
 
-.post-content blockquote {
-  border-left: 4px solid var(--accent);
-  padding-left: var(--space-4);
-  margin: var(--space-4) 0;
+article.post li::marker {
+  color: var(--accent);
+}
+
+/* Blockquotes - Enhanced */
+article.post blockquote {
+  position: relative;
+  border-left: 3px solid var(--accent);
+  padding: var(--space-4) var(--space-6);
+  margin: var(--space-6) 0;
+  background: var(--bg-secondary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
   color: var(--text-secondary);
-  font-style: italic;
+  font-style: normal;
 }
 
-.post-content img {
+article.post blockquote::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  font-size: 4rem;
+  color: var(--accent);
+  opacity: 0.2;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+article.post blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Images */
+article.post img {
   max-width: 100%;
   height: auto;
   border-radius: var(--radius-md);
-  margin: var(--space-4) 0;
+  margin: var(--space-6) 0;
+  border: 1px solid var(--border);
 }
 
-.post-content pre {
-  margin: var(--space-4) 0;
+/* Code blocks */
+article.post pre {
+  margin: var(--space-8) calc(-1 * var(--space-4));
+  padding: var(--space-5);
+  background: var(--bg-code);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
   overflow-x: auto;
+  position: relative;
 }
 
-/* Custom scrollbar for code blocks - subtle & elegant */
-.post-content pre::-webkit-scrollbar {
+@media (min-width: 768px) {
+  article.post pre {
+    margin-left: calc(-1 * var(--space-6));
+    margin-right: calc(-1 * var(--space-6));
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* Inline code */
+article.post code {
+  font-family: var(--font-mono);
+  background: var(--bg-code);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+article.post pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Links */
+article.post a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(88, 166, 255, 0.3);
+  transition: border-color 0.2s ease;
+}
+
+article.post a:hover {
+  color: var(--accent-hover);
+  border-bottom-color: var(--accent-hover);
+}
+
+/* Horizontal rule */
+article.post hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: var(--space-8) 0;
+}
+
+/* Tables */
+article.post table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-6) 0;
+  font-size: 0.9rem;
+}
+
+article.post th,
+article.post td {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+article.post th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+article.post tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Strong & Em */
+article.post strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Custom scrollbar for code blocks */
+article.post pre::-webkit-scrollbar {
   height: 6px;
 }
 
-.post-content pre::-webkit-scrollbar-track {
+article.post pre::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.post-content pre::-webkit-scrollbar-thumb {
+article.post pre::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
 }
 
-.post-content pre::-webkit-scrollbar-thumb:hover {
+article.post pre::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
 }
 
-/* Firefox */
-.post-content pre {
+article.post pre {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
-}
-
-.post-content a {
-  color: var(--accent);
-  text-decoration: underline;
-}
-
-.post-content a:hover {
-  color: var(--accent-hover);
-}
-
-.post-content hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: var(--space-8) 0;
-}
-
-/* Back link */
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-6);
-  color: var(--accent);
-  font-size: 0.875rem;
-}
-
-.back-link:hover {
-  color: var(--accent-hover);
 }
 
 /* Copy button styles */

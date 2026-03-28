@@ -28,7 +28,14 @@
       "Bash(find dist/tags -type f -name *.html)",
       "Bash(git add:*)",
       "Bash(git reset:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "WebFetch(domain:minimax-algeng-chat-tts.oss-cn-wulanchabu.aliyuncs.com)",
+      "Bash(npm install:*)",
+      "Bash(node -e \":*)",
+      "Bash(npx playwright:*)",
+      "Bash(npx -y pagefind --help)",
+      "Bash(cd:*)",
+      "Bash(taskkill //F //IM node.exe)"
     ]
   }
 }

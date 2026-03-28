@@ -1,5 +1,5 @@
 ---
-title: 技术博客正式上线公告
+title: 技术博客正式上线
 date: 2026-03-26
 description: Tech Blog 技术博客正式上线，分享游戏开发与技术实践经验
 draft: false

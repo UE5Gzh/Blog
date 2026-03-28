@@ -8,36 +8,46 @@ interface Props {
 
 const { posts, currentSlug } = Astro.props;
 
-// Sort posts by date (newest first)
 const sortedPosts = [...posts].sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-// Find current index
 const currentIndex = sortedPosts.findIndex(p => p.slug === currentSlug);
-
-// Posts are sorted newest-first:
-// - posts[currentIndex + 1] = older post (appears before in list) = "previous"
-// - posts[currentIndex - 1] = newer post (appears after in list) = "next"
 const prevPost = sortedPosts[currentIndex + 1];
 const nextPost = sortedPosts[currentIndex - 1];
 ---
 
 {(prevPost || nextPost) && (
   <nav class="post-navigation">
+    <div class="nav-header">
+      <span class="nav-label">Continue Reading</span>
+    </div>
     <div class="nav-links">
       {prevPost ? (
-        <a href={`/posts/${prevPost.slug}`} class="nav-link prev">
-          <span class="nav-label">Previous</span>
+        <a href={`/posts/${prevPost.slug}`} class="nav-card prev">
+          <span class="nav-direction">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Previous
+          </span>
           <span class="nav-title">{prevPost.data.title}</span>
         </a>
-      ) : <div />}
+      ) : <div class="nav-placeholder" />}
+
       {nextPost ? (
-        <a href={`/posts/${nextPost.slug}`} class="nav-link next">
-          <span class="nav-label">Next</span>
+        <a href={`/posts/${nextPost.slug}`} class="nav-card next">
           <span class="nav-title">{nextPost.data.title}</span>
+          <span class="nav-direction">
+            Next
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </span>
         </a>
-      ) : <div />}
+      ) : <div class="nav-placeholder" />}
     </div>
   </nav>
 )}
@@ -49,45 +59,80 @@ const nextPost = sortedPosts[currentIndex - 1];
     border-top: 1px solid var(--border);
   }
 
+  .nav-header {
+    margin-bottom: var(--space-4);
+  }
+
+  .nav-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
   .nav-links {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-4);
   }
 
-  .nav-link {
+  .nav-card {
     display: flex;
     flex-direction: column;
+    gap: var(--space-2);
     padding: var(--space-4);
     background: var(--bg-secondary);
-    border-radius: var(--radius-md);
     border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.2s ease;
   }
 
-  .nav-link:hover {
+  .nav-card:hover {
     border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  .nav-link.next {
+  .nav-card.next {
+    align-items: flex-end;
     text-align: right;
   }
 
-  .nav-label {
+  .nav-direction {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
     font-size: 0.75rem;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: var(--space-1);
   }
 
   .nav-title {
-    color: var(--accent);
+    font-size: 0.9rem;
     font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  .nav-card:hover .nav-title {
+    color: var(--accent);
+  }
+
+  .nav-placeholder {
+    /* Empty grid cell when no prev/next post */
   }
 
   @media (max-width: 640px) {
     .nav-links {
       grid-template-columns: 1fr;
+    }
+
+    .nav-card.next {
+      align-items: flex-start;
+      text-align: left;
     }
   }
 </style>

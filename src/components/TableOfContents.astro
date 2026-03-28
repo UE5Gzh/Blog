@@ -10,40 +10,77 @@ interface Props {
 }
 
 const { headings } = Astro.props;
-// Filter to H2 and H3 only (per research: avoid H1 which is the post title)
-const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 ---
 
-{tocHeadings.length > 0 && (
-  <nav class="table-of-contents">
-    <h2 class="toc-title">On this page</h2>
-    <ul class="toc-list">
-      {tocHeadings.map(heading => (
-        <li class={`toc-item depth-${heading.depth}`}>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
-        </li>
-      ))}
-    </ul>
-  </nav>
-)}
+<nav class="toc-sidebar">
+  <h2 class="toc-title">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="8" y1="6" x2="21" y2="6"></line>
+      <line x1="8" y1="12" x2="21" y2="12"></line>
+      <line x1="8" y1="18" x2="21" y2="18"></line>
+      <line x1="3" y1="6" x2="3.01" y2="6"></line>
+      <line x1="3" y1="12" x2="3.01" y2="12"></line>
+      <line x1="3" y1="18" x2="3.01" y2="18"></line>
+    </svg>
+    On this page
+  </h2>
+  <ul class="toc-list" id="toc-list">
+    {headings.map(heading => (
+      <li class={`toc-item depth-${heading.depth}`}>
+        <a href={`#${heading.slug}`} data-slug={heading.slug}>{heading.text}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  // Highlight active heading on scroll
+  function updateActiveHeading() {
+    const tocLinks = document.querySelectorAll('#toc-list a');
+    const headings = document.querySelectorAll('article.post h2, article.post h3');
+
+    let currentActive = '';
+
+    headings.forEach(heading => {
+      const rect = heading.getBoundingClientRect();
+      if (rect.top <= 120) {
+        currentActive = heading.id;
+      }
+    });
+
+    tocLinks.forEach(link => {
+      const slug = link.getAttribute('data-slug');
+      link.classList.toggle('active', slug === currentActive);
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveHeading, { passive: true });
+  updateActiveHeading();
+</script>
 
 <style>
-  .table-of-contents {
-    margin-bottom: var(--space-6);
+  .toc-sidebar {
     padding: var(--space-4);
     background: var(--bg-secondary);
-    border-radius: var(--radius-md);
     border: 1px solid var(--border);
+    border-radius: var(--radius-md);
   }
 
   .toc-title {
-    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.75rem;
     font-weight: 600;
-    margin-bottom: var(--space-3);
-    margin-top: 0;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-4);
+    margin-top: 0;
+  }
+
+  .toc-title svg {
+    opacity: 0.7;
   }
 
   .toc-list {
@@ -54,6 +91,20 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 
   .toc-item {
     margin-bottom: var(--space-2);
+    position: relative;
+  }
+
+  .toc-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    transition: width 0.2s ease;
   }
 
   .toc-item.depth-3 {
@@ -61,11 +112,30 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
   }
 
   .toc-item a {
+    display: block;
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    border-left: 2px solid transparent;
   }
 
   .toc-item a:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .toc-item a.active {
     color: var(--accent);
+    background: rgba(88, 166, 255, 0.08);
+    border-left-color: var(--accent);
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .toc-sidebar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 </style>

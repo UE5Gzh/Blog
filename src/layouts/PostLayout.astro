@@ -35,75 +35,310 @@ const formattedDate = new Date(date).toLocaleDateString('en-US', {
 
 // Filter headings for TOC (H2 and H3 only)
 const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
+const hasTOC = tocHeadings.length >= 3;
 ---
 
 <BaseLayout title={title} description={description}>
-  <article class="post">
-    <a href="/" class="back-link">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-      Back to posts
-    </a>
+  <!-- Reading Progress Bar -->
+  <div class="reading-progress" id="reading-progress"></div>
 
-    <header>
-      <h1>{title}</h1>
-      <div class="post-meta">
-        <time datetime={date.toISOString()}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-          {formattedDate}
-        </time>
-        {minutesRead && (
-          <span class="reading-time">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
+  <div class={`post-layout ${hasTOC ? 'has-toc' : ''}`}>
+    <!-- Left Sidebar - Table of Contents (fixed) -->
+    {hasTOC && (
+      <aside class="post-sidebar-left">
+        <div class="toc-sticky">
+          <TableOfContents headings={tocHeadings} />
+        </div>
+      </aside>
+    )}
+
+    <!-- Main Content -->
+    <article class="post">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a href="/">Home</a>
+        <span class="separator">/</span>
+        <span class="current">Post</span>
+      </nav>
+
+      <header class="post-header">
+        <h1 class="post-title">{title}</h1>
+
+        <div class="post-meta">
+          <div class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
-            {minutesRead}
-          </span>
-        )}
+            <time datetime={date.toISOString()}>{formattedDate}</time>
+          </div>
+          {minutesRead && (
+            <div class="meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span>{minutesRead}</span>
+            </div>
+          )}
+        </div>
+
         {tags && tags.length > 0 && (
-          <div class="tags">
+          <div class="post-tags">
             {tags.map(tag => (
-              <span class="tag">{tag}</span>
+              <span class="post-tag">{tag}</span>
             ))}
           </div>
         )}
+
+        <!-- Decorative divider -->
+        <div class="header-divider">
+          <span class="divider-line"></span>
+          <span class="divider-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </span>
+          <span class="divider-line"></span>
+        </div>
+      </header>
+
+      <div class="post-content">
+        <slot />
       </div>
 
-      {/* Table of Contents - only show if 3+ headings */}
-      {tocHeadings.length >= 3 && <TableOfContents headings={tocHeadings} />}
-    </header>
-
-    <div class="post-content">
-      <slot />
-    </div>
-
-    {/* Previous/Next Navigation */}
-    {posts.length > 0 && currentSlug && (
-      <PostNavigation posts={posts} currentSlug={currentSlug} />
-    )}
-  </article>
+      {/* Previous/Next Navigation */}
+      {posts.length > 0 && currentSlug && (
+        <PostNavigation posts={posts} currentSlug={currentSlug} />
+      )}
+    </article>
+  </div>
 </BaseLayout>
 
-{/* Copy button initialization - runs on every page load including view transitions */}
+{/* Copy button initialization */}
 <script>
   import { addCopyButtons } from '../utils/copyButton.ts';
-
-  // Run on initial load and after view transitions
   addCopyButtons();
   document.addEventListener('astro:page-load', addCopyButtons);
 </script>
 
+{/* Reading progress script */}
+<script>
+  function updateProgress() {
+    const progressBar = document.getElementById('reading-progress');
+    if (!progressBar) return;
+
+    const article = document.querySelector('.post');
+    if (!article) return;
+
+    const articleTop = article.offsetTop;
+    const articleHeight = article.offsetHeight;
+    const windowHeight = window.innerHeight;
+    const scrollTop = window.scrollY;
+
+    const start = articleTop - windowHeight;
+    const end = articleTop + articleHeight - windowHeight;
+    const progress = Math.max(0, Math.min(1, (scrollTop - start) / (end - start)));
+
+    progressBar.style.width = `${progress * 100}%`;
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+</script>
+
 <style>
-  .reading-time {
+  /* Reading Progress Bar */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    z-index: 1000;
+    transition: width 0.1s ease-out;
+  }
+
+  /* Main Layout */
+  .post-layout {
+    display: flex;
+    gap: var(--space-8);
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .post-layout.has-toc {
+    max-width: 1100px;
+  }
+
+  /* Left Sidebar - TOC */
+  .post-sidebar-left {
+    flex-shrink: 0;
+    width: 220px;
+    display: none;
+  }
+
+  .post-layout.has-toc .post-sidebar-left {
+    display: block;
+  }
+
+  .toc-sticky {
+    position: sticky;
+    top: calc(var(--space-8) + 60px);
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .breadcrumb a {
+    color: var(--text-secondary);
+  }
+
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+
+  .breadcrumb .separator {
+    opacity: 0.5;
+  }
+
+  .breadcrumb .current {
+    color: var(--text-primary);
+  }
+
+  /* Post Header */
+  .post-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .post-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  .meta-item {
     display: inline-flex;
     align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
     color: var(--text-secondary);
+  }
+
+  .meta-item svg {
+    opacity: 0.7;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+
+  .post-tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    background: var(--bg-code);
+    color: var(--accent);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  /* Decorative Divider */
+  .header-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  .divider-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--accent);
+  }
+
+  /* Main Post Article */
+  .post {
+    flex: 1;
+    min-width: 0;
+    max-width: 72ch;
+  }
+
+  /* Content area constrained */
+  .post-content {
+    max-width: 100%;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .post-layout.has-toc {
+      flex-direction: column;
+    }
+
+    .post-sidebar-left {
+      width: 100%;
+      display: block;
+    }
+
+    .post-layout.has-toc .post-sidebar-left {
+      order: -1;
+    }
+
+    .toc-sticky {
+      position: static;
+      max-height: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .post-layout {
+      padding: var(--space-4) var(--space-3);
+    }
+
+    .post-title {
+      font-size: 1.5rem;
+    }
+
+    .header-divider {
+      margin-top: var(--space-4);
+    }
   }
 </style>
