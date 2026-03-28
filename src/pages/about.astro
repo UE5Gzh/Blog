@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Author" description="About Me">
+  <section class="about">
+    <h1>About Me</h1>
+
+    <div class="profile">
+      <div class="avatar">
+        <img src="/images/avatar.jpg" alt="Profile" />
+      </div>
+      <div class="info">
+        <h2>郭正浩</h2>
+        <p class="bio">
+          A brief introduction about yourself. Share your background, interests, and what you're passionate about.
+        </p>
+      </div>
+    </div>
+
+    <div class="details">
+      <h3>Background</h3>
+      <p>
+        Write about your professional background, skills, and experience here.
+      </p>
+
+      <h3>Interests</h3>
+      <p>
+        What topics are you most interested in? Programming languages, frameworks, or concepts?
+      </p>
+
+      <h3>Connect</h3>
+      <ul class="social-links">
+        <li><a href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://twitter.com/yourusername" target="_blank" rel="noopener">BiliBili</a></li>
+        <li><a href="mailto:your.email@example.com">Email</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .about h1 {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-8);
+    text-align: center;
+  }
+
+  .profile {
+    display: flex;
+    gap: var(--space-6);
+    align-items: center;
+    margin-bottom: var(--space-8);
+    padding: var(--space-6);
+    background: var(--bg-secondary);
+    border-radius: 12px;
+  }
+
+  .avatar {
+    flex-shrink: 0;
+  }
+
+  .avatar img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--accent);
+  }
+
+  .info h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .bio {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .details h3 {
+    font-size: 1.25rem;
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+    color: var(--accent);
+  }
+
+  .details p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .social-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .social-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .social-links a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .profile {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .about h1 {
+      font-size: 1.75rem;
+    }
+  }
+</style>

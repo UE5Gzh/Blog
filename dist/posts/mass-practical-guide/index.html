@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="深入实践UE5 Mass集群框架，学习如何在实际项目中应用ECS架构"><title>UE5 Mass框架实战：从入门到精通 | Tech Blog</title><style>article.post{max-width:65ch;margin:0 auto;line-height:1.7}article.post h1,article.post h2,article.post h3,article.post h4,article.post h5,article.post h6{margin-top:2em;margin-bottom:.5em}article.post h1{font-size:2rem}article.post h2{font-size:1.5rem}article.post h3{font-size:1.25rem}.post-meta{display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center;margin-bottom:var(--space-6);padding-bottom:var(--space-4);border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:.875rem}.post-meta time{display:inline-flex;align-items:center}.post-meta .tags{display:flex;flex-wrap:wrap;gap:var(--space-2)}.post-meta .tag{font-size:.75rem;padding:.25rem .5rem;background-color:var(--bg-code);color:var(--accent);border-radius:var(--radius-sm)}.post-content{margin-top:var(--space-8)}.post-content p{margin-bottom:var(--space-4)}.post-content ul,.post-content ol{margin-bottom:var(--space-4);padding-left:1.5rem}.post-content li{margin-bottom:var(--space-2)}.post-content blockquote{border-left:4px solid var(--accent);padding-left:var(--space-4);margin:var(--space-4) 0;color:var(--text-secondary);font-style:italic}.post-content img{max-width:100%;height:auto;border-radius:var(--radius-md);margin:var(--space-4) 0}.post-content pre{margin:var(--space-4) 0}.post-content a{color:var(--accent);text-decoration:underline}.post-content a:hover{color:var(--accent-hover)}.post-content hr{border:none;border-top:1px solid var(--border);margin:var(--space-8) 0}.back-link{display:inline-flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-6);color:var(--accent);font-size:.875rem}.back-link:hover{color:var(--accent-hover)}.table-of-contents[data-astro-cid-xvrfupwn]{margin-bottom:var(--space-6);padding:var(--space-4);background:var(--bg-secondary);border-radius:var(--radius-md);border:1px solid var(--border)}.toc-title[data-astro-cid-xvrfupwn]{font-size:.875rem;font-weight:600;margin-bottom:var(--space-3);margin-top:0;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}.toc-list[data-astro-cid-xvrfupwn]{list-style:none;padding:0;margin:0}.toc-item[data-astro-cid-xvrfupwn]{margin-bottom:var(--space-2)}.toc-item[data-astro-cid-xvrfupwn].depth-3{padding-left:var(--space-4)}.toc-item[data-astro-cid-xvrfupwn] a[data-astro-cid-xvrfupwn]{color:var(--text-secondary);font-size:.875rem}.toc-item[data-astro-cid-xvrfupwn] a[data-astro-cid-xvrfupwn]:hover{color:var(--accent)}.post-navigation[data-astro-cid-lhwu4qwf]{margin-top:var(--space-8);padding-top:var(--space-6);border-top:1px solid var(--border)}.nav-links[data-astro-cid-lhwu4qwf]{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}.nav-link[data-astro-cid-lhwu4qwf]{display:flex;flex-direction:column;padding:var(--space-4);background:var(--bg-secondary);border-radius:var(--radius-md);border:1px solid var(--border)}.nav-link[data-astro-cid-lhwu4qwf]:hover{border-color:var(--accent)}.nav-link[data-astro-cid-lhwu4qwf].next{text-align:right}.nav-label[data-astro-cid-lhwu4qwf]{font-size:.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:var(--space-1)}.nav-title[data-astro-cid-lhwu4qwf]{color:var(--accent);font-weight:500}@media (max-width: 640px){.nav-links[data-astro-cid-lhwu4qwf]{grid-template-columns:1fr}}.reading-time[data-astro-cid-gjtny2mx]{display:inline-flex;align-items:center;color:var(--text-secondary)}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.D1Ffo2Ur.css"><script type="module">function o(){document.querySelectorAll("article.post pre").forEach(e=>{if(e.querySelector(".copy-button"))return;const t=document.createElement("button");t.textContent="Copy",t.className="copy-button",t.setAttribute("aria-label","Copy code to clipboard"),e.style.position="relative",e.appendChild(t),t.addEventListener("click",()=>{const n=e.querySelector("code")?.textContent||"";navigator.clipboard.writeText(n).then(()=>{t.textContent="Copied!",setTimeout(()=>{t.textContent="Copy"},2e3)}).catch(()=>{t.textContent="Error",setTimeout(()=>{t.textContent="Copy"},2e3)})})})}o();document.addEventListener("astro:page-load",o);
+</script></head> <body> <header class="header" data-astro-cid-3ef6ksr2> <div class="header-inner" data-astro-cid-3ef6ksr2> <a href="/" class="logo" data-astro-cid-3ef6ksr2>UE5 Mass框架实战：从入门到精通</a> <nav class="nav" data-astro-cid-3ef6ksr2> <a href="/" data-astro-cid-3ef6ksr2>Home</a> <a href="/about" data-astro-cid-3ef6ksr2>Author</a> <!-- Categories Dropdown --> <div class="dropdown" data-astro-cid-3ef6ksr2> <button class="dropdown-trigger" aria-haspopup="true" data-astro-cid-3ef6ksr2>
+Categories
+</button> <div class="dropdown-menu" data-astro-cid-3ef6ksr2> <a href="/categories/General" data-astro-cid-3ef6ksr2>General</a> <a href="/categories/Unreal Engine" data-astro-cid-3ef6ksr2>Unreal Engine</a> <a href="/categories/Unity" data-astro-cid-3ef6ksr2>Unity</a> <a href="/categories/Algorithm" data-astro-cid-3ef6ksr2>Algorithm</a> <a href="/categories/Graphics" data-astro-cid-3ef6ksr2>Graphics</a> <a href="/categories/AI" data-astro-cid-3ef6ksr2>AI</a> <a href="/categories/Others" data-astro-cid-3ef6ksr2>Others</a> </div> </div> <!-- Tags Dropdown --> <div class="dropdown" data-astro-cid-3ef6ksr2> <button class="dropdown-trigger" aria-haspopup="true" data-astro-cid-3ef6ksr2>
+Tags
+</button> <div class="dropdown-menu" data-astro-cid-3ef6ksr2> <a href="/tags/Announcement" data-astro-cid-3ef6ksr2>Announcement</a> <a href="/tags/UE5" data-astro-cid-3ef6ksr2>UE5</a> <a href="/tags/Unity6" data-astro-cid-3ef6ksr2>Unity6</a> <a href="/tags/GAS" data-astro-cid-3ef6ksr2>GAS</a> <a href="/tags/Mass" data-astro-cid-3ef6ksr2>Mass</a> <a href="/tags/Shader" data-astro-cid-3ef6ksr2>Shader</a> <a href="/tags/OpenClaw" data-astro-cid-3ef6ksr2>OpenClaw</a> </div> </div> <!-- Archive Link --> <a href="/archive" data-astro-cid-3ef6ksr2>Archive</a> </nav> </div> </header>  <main>  <article class="post" data-astro-cid-gjtny2mx> <a href="/" class="back-link" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-gjtny2mx> <polyline points="15 18 9 12 15 6" data-astro-cid-gjtny2mx></polyline> </svg>
+Back to posts
+</a> <header data-astro-cid-gjtny2mx> <h1 data-astro-cid-gjtny2mx>UE5 Mass框架实战：从入门到精通</h1> <div class="post-meta" data-astro-cid-gjtny2mx> <time datetime="2026-03-28T00:00:00.000Z" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;" data-astro-cid-gjtny2mx> <rect x="3" y="4" width="18" height="18" rx="2" ry="2" data-astro-cid-gjtny2mx></rect> <line x1="16" y1="2" x2="16" y2="6" data-astro-cid-gjtny2mx></line> <line x1="8" y1="2" x2="8" y2="6" data-astro-cid-gjtny2mx></line> <line x1="3" y1="10" x2="21" y2="10" data-astro-cid-gjtny2mx></line> </svg> March 28, 2026 </time> <span class="reading-time" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;" data-astro-cid-gjtny2mx> <circle cx="12" cy="12" r="10" data-astro-cid-gjtny2mx></circle> <polyline points="12 6 12 12 16 14" data-astro-cid-gjtny2mx></polyline> </svg> 3 min read </span> <div class="tags" data-astro-cid-gjtny2mx> <span class="tag" data-astro-cid-gjtny2mx>Mass</span> </div> </div>  <nav class="table-of-contents" data-astro-cid-xvrfupwn><h2 class="toc-title" data-astro-cid-xvrfupwn>On this page</h2><ul class="toc-list" data-astro-cid-xvrfupwn><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#前言" data-astro-cid-xvrfupwn>前言</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#项目背景" data-astro-cid-xvrfupwn>项目背景</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#实现步骤" data-astro-cid-xvrfupwn>实现步骤</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#1-定义fragment" data-astro-cid-xvrfupwn>1. 定义Fragment</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#2-创建tag" data-astro-cid-xvrfupwn>2. 创建Tag</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#3-实现movementsystem" data-astro-cid-xvrfupwn>3. 实现MovementSystem</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#4-实现attacksystem" data-astro-cid-xvrfupwn>4. 实现AttackSystem</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#5-批量创建单位" data-astro-cid-xvrfupwn>5. 批量创建单位</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#性能对比" data-astro-cid-xvrfupwn>性能对比</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#调试工具" data-astro-cid-xvrfupwn>调试工具</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#总结" data-astro-cid-xvrfupwn>总结</a></li></ul></nav> </header> <div class="post-content" data-astro-cid-gjtny2mx>  <h1 id="ue5-mass框架实战从入门到精通">UE5 Mass框架实战：从入门到精通</h1>
+<h2 id="前言">前言</h2>
+<p>本文通过实际案例，深入讲解Mass框架的使用方法和最佳实践。</p>
+<h2 id="项目背景">项目背景</h2>
+<p>假设我们需要构建一个RTS游戏，需要同时控制10000个单位。</p>
+<h2 id="实现步骤">实现步骤</h2>
+<h3 id="1-定义fragment">1. 定义Fragment</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#6A9955">// 单位位置</span></span>
+<span class="line"><span style="color:#DCDCAA">USTRUCT</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">struct</span><span style="color:#4EC9B0"> FRTSMovementFragment</span><span style="color:#D4D4D4"> : </span><span style="color:#569CD6">public</span><span style="color:#4EC9B0"> FMassFragment</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#DCDCAA">    UPROPERTY</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#D4D4D4">    FVector TargetLocation;</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#DCDCAA">    UPROPERTY</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> MoveSpeed = </span><span style="color:#B5CEA8">300.0f</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A9955">// 单位攻击</span></span>
+<span class="line"><span style="color:#DCDCAA">USTRUCT</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">struct</span><span style="color:#4EC9B0"> FRTSAttackFragment</span><span style="color:#D4D4D4"> : </span><span style="color:#569CD6">public</span><span style="color:#4EC9B0"> FMassFragment</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#DCDCAA">    UPROPERTY</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> AttackRange = </span><span style="color:#B5CEA8">150.0f</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#DCDCAA">    UPROPERTY</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> AttackCooldown = </span><span style="color:#B5CEA8">1.0f</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#DCDCAA">    UPROPERTY</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> CurrentCooldown = </span><span style="color:#B5CEA8">0.0f</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">};</span></span>
+<span class="line"></span></code></pre>
+<h3 id="2-创建tag">2. 创建Tag</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#DCDCAA">USTRUCT</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">struct</span><span style="color:#4EC9B0"> FSelectedTag</span><span style="color:#D4D4D4"> : </span><span style="color:#569CD6">public</span><span style="color:#4EC9B0"> FMassTag</span><span style="color:#D4D4D4"> { };</span><span style="color:#6A9955">      // 选中状态</span></span>
+<span class="line"><span style="color:#DCDCAA">USTRUCT</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">struct</span><span style="color:#4EC9B0"> FEnemyTag</span><span style="color:#D4D4D4"> : </span><span style="color:#569CD6">public</span><span style="color:#4EC9B0"> FMassTag</span><span style="color:#D4D4D4"> { };</span><span style="color:#6A9955">        // 敌方单位</span></span>
+<span class="line"><span style="color:#DCDCAA">USTRUCT</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">struct</span><span style="color:#4EC9B0"> FAllyTag</span><span style="color:#D4D4D4"> : </span><span style="color:#569CD6">public</span><span style="color:#4EC9B0"> FMassTag</span><span style="color:#D4D4D4"> { };</span><span style="color:#6A9955">        // 友方单位</span></span>
+<span class="line"><span style="color:#DCDCAA">USTRUCT</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">struct</span><span style="color:#4EC9B0"> FMovingTag</span><span style="color:#D4D4D4"> : </span><span style="color:#569CD6">public</span><span style="color:#4EC9B0"> FMassTag</span><span style="color:#D4D4D4"> { };</span><span style="color:#6A9955">       // 移动中</span></span>
+<span class="line"></span></code></pre>
+<h3 id="3-实现movementsystem">3. 实现MovementSystem</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#DCDCAA">USTRUCT</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">struct</span><span style="color:#4EC9B0"> FRTSMovementProcessor</span><span style="color:#D4D4D4"> : </span><span style="color:#569CD6">public</span><span style="color:#4EC9B0"> FMassTagGameBlocableSystem</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#DCDCAA">    GENERATED_BODY</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#569CD6">public:</span></span>
+<span class="line"><span style="color:#569CD6">    void</span><span style="color:#DCDCAA"> ConfigureQueries</span><span style="color:#D4D4D4">() </span><span style="color:#569CD6">override</span></span>
+<span class="line"><span style="color:#D4D4D4">    {</span></span>
+<span class="line"><span style="color:#9CDCFE">        MovementQuery</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddRequirement</span><span style="color:#D4D4D4">&#x3C;FRTSMovementFragment>(</span></span>
+<span class="line"><span style="color:#4EC9B0">            EMassFragmentAccess</span><span style="color:#D4D4D4">::ReadWrite);</span></span>
+<span class="line"><span style="color:#9CDCFE">        MovementQuery</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddRequirement</span><span style="color:#D4D4D4">&#x3C;FTransformFragment>(</span></span>
+<span class="line"><span style="color:#4EC9B0">            EMassFragmentAccess</span><span style="color:#D4D4D4">::ReadWrite);</span></span>
+<span class="line"><span style="color:#9CDCFE">        MovementQuery</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddTagRequirement</span><span style="color:#D4D4D4">&#x3C;FMovingTag>(</span></span>
+<span class="line"><span style="color:#4EC9B0">            EMassFragmentPresence</span><span style="color:#D4D4D4">::All);</span></span>
+<span class="line"><span style="color:#D4D4D4">    }</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#569CD6">    void</span><span style="color:#DCDCAA"> Execute</span><span style="color:#D4D4D4">(</span></span>
+<span class="line"><span style="color:#4EC9B0">        FMassEntityManager</span><span style="color:#569CD6">&#x26;</span><span style="color:#9CDCFE"> EntityManager</span><span style="color:#D4D4D4">,</span></span>
+<span class="line"><span style="color:#4EC9B0">        FMassExecutionPropertyMapper</span><span style="color:#569CD6">&#x26;</span><span style="color:#9CDCFE"> PropertyMapper</span><span style="color:#D4D4D4">,</span></span>
+<span class="line"><span style="color:#4EC9B0">        FMassGlobalPropertyMapper</span><span style="color:#569CD6">&#x26;</span><span style="color:#9CDCFE"> GlobalMapper</span><span style="color:#D4D4D4">) </span><span style="color:#569CD6">override</span></span>
+<span class="line"><span style="color:#D4D4D4">    {</span></span>
+<span class="line"><span style="color:#9CDCFE">        MovementQuery</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">ForEachEntityChunk</span><span style="color:#D4D4D4">(EntityManager, </span></span>
+<span class="line"><span style="color:#D4D4D4">            PropertyMapper, GlobalMapper,</span></span>
+<span class="line"><span style="color:#D4D4D4">            [](</span><span style="color:#4EC9B0">FRTSMovementFragment</span><span style="color:#569CD6">&#x26;</span><span style="color:#9CDCFE"> Movement</span><span style="color:#D4D4D4">, </span></span>
+<span class="line"><span style="color:#4EC9B0">               FTransformFragment</span><span style="color:#569CD6">&#x26;</span><span style="color:#9CDCFE"> Transform</span><span style="color:#D4D4D4">)</span></span>
+<span class="line"><span style="color:#D4D4D4">            {</span></span>
+<span class="line"><span style="color:#6A9955">                // 计算方向</span></span>
+<span class="line"><span style="color:#D4D4D4">                FVector Direction = </span></span>
+<span class="line"><span style="color:#D4D4D4">                    (</span><span style="color:#9CDCFE">Movement</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">TargetLocation</span><span style="color:#D4D4D4"> - </span><span style="color:#9CDCFE">Transform</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">Position</span><span style="color:#D4D4D4">).</span><span style="color:#DCDCAA">GetSafeNormal</span><span style="color:#D4D4D4">();</span></span>
+<span class="line"><span style="color:#D4D4D4">                </span></span>
+<span class="line"><span style="color:#6A9955">                // 移动</span></span>
+<span class="line"><span style="color:#9CDCFE">                Transform</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">Position</span><span style="color:#D4D4D4"> += </span></span>
+<span class="line"><span style="color:#D4D4D4">                    Direction * </span><span style="color:#9CDCFE">Movement</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">MoveSpeed</span><span style="color:#D4D4D4"> * DeltaTime;</span></span>
+<span class="line"><span style="color:#D4D4D4">            });</span></span>
+<span class="line"><span style="color:#D4D4D4">    }</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#569CD6">private:</span></span>
+<span class="line"><span style="color:#D4D4D4">    FMassEntityQuery MovementQuery;</span></span>
+<span class="line"><span style="color:#D4D4D4">};</span></span>
+<span class="line"></span></code></pre>
+<h3 id="4-实现attacksystem">4. 实现AttackSystem</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#DCDCAA">USTRUCT</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#569CD6">struct</span><span style="color:#4EC9B0"> FRTSAttackProcessor</span><span style="color:#D4D4D4"> : </span><span style="color:#569CD6">public</span><span style="color:#4EC9B0"> FMassTagGameBlocableSystem</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#DCDCAA">    GENERATED_BODY</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#569CD6">public:</span></span>
+<span class="line"><span style="color:#569CD6">    void</span><span style="color:#DCDCAA"> ConfigureQueries</span><span style="color:#D4D4D4">() </span><span style="color:#569CD6">override</span></span>
+<span class="line"><span style="color:#D4D4D4">    {</span></span>
+<span class="line"><span style="color:#9CDCFE">        AttackQuery</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddRequirement</span><span style="color:#D4D4D4">&#x3C;FRTSAttackFragment>(</span></span>
+<span class="line"><span style="color:#4EC9B0">            EMassFragmentAccess</span><span style="color:#D4D4D4">::ReadWrite);</span></span>
+<span class="line"><span style="color:#9CDCFE">        AttackQuery</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddTagRequirement</span><span style="color:#D4D4D4">&#x3C;FEnemyTag>(</span></span>
+<span class="line"><span style="color:#4EC9B0">            EMassFragmentPresence</span><span style="color:#D4D4D4">::All);</span></span>
+<span class="line"><span style="color:#9CDCFE">        AttackQuery</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddTagRequirement</span><span style="color:#D4D4D4">&#x3C;FMovingTag>(</span></span>
+<span class="line"><span style="color:#4EC9B0">            EMassFragmentPresence</span><span style="color:#D4D4D4">::None);</span></span>
+<span class="line"><span style="color:#D4D4D4">    }</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#569CD6">    void</span><span style="color:#DCDCAA"> Execute</span><span style="color:#D4D4D4">(...) </span><span style="color:#569CD6">override</span></span>
+<span class="line"><span style="color:#D4D4D4">    {</span></span>
+<span class="line"><span style="color:#9CDCFE">        AttackQuery</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">ForEachEntityChunk</span><span style="color:#D4D4D4">(...</span></span>
+<span class="line"><span style="color:#D4D4D4">            [](</span><span style="color:#4EC9B0">FRTSAttackFragment</span><span style="color:#569CD6">&#x26;</span><span style="color:#9CDCFE"> Attack</span><span style="color:#D4D4D4">)</span></span>
+<span class="line"><span style="color:#D4D4D4">            {</span></span>
+<span class="line"><span style="color:#C586C0">                if</span><span style="color:#D4D4D4"> (</span><span style="color:#9CDCFE">Attack</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">CurrentCooldown</span><span style="color:#D4D4D4"> &#x3C;= </span><span style="color:#B5CEA8">0.0f</span><span style="color:#D4D4D4">)</span></span>
+<span class="line"><span style="color:#D4D4D4">                {</span></span>
+<span class="line"><span style="color:#6A9955">                    // 执行攻击</span></span>
+<span class="line"><span style="color:#9CDCFE">                    Attack</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">CurrentCooldown</span><span style="color:#D4D4D4"> = </span><span style="color:#9CDCFE">Attack</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AttackCooldown</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">                }</span></span>
+<span class="line"><span style="color:#C586C0">                else</span></span>
+<span class="line"><span style="color:#D4D4D4">                {</span></span>
+<span class="line"><span style="color:#9CDCFE">                    Attack</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">CurrentCooldown</span><span style="color:#D4D4D4"> -= DeltaTime;</span></span>
+<span class="line"><span style="color:#D4D4D4">                }</span></span>
+<span class="line"><span style="color:#D4D4D4">            });</span></span>
+<span class="line"><span style="color:#D4D4D4">    }</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#569CD6">private:</span></span>
+<span class="line"><span style="color:#D4D4D4">    FMassEntityQuery AttackQuery;</span></span>
+<span class="line"><span style="color:#D4D4D4">};</span></span>
+<span class="line"></span></code></pre>
+<h3 id="5-批量创建单位">5. 批量创建单位</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#569CD6">void</span><span style="color:#4EC9B0"> ARTSGameMode</span><span style="color:#D4D4D4">::</span><span style="color:#DCDCAA">SpawnEnemies</span><span style="color:#D4D4D4">(</span><span style="color:#4EC9B0">int32</span><span style="color:#9CDCFE"> Count</span><span style="color:#D4D4D4">)</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#D4D4D4">    FMassEntityManager&#x26; Manager = </span><span style="color:#DCDCAA">GetWorld</span><span style="color:#D4D4D4">()-></span><span style="color:#9CDCFE">GetSubsystem</span><span style="color:#D4D4D4">&#x3C;UMassEntitySubsystem>()-></span><span style="color:#DCDCAA">GetEntityManager</span><span style="color:#D4D4D4">();</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#6A9955">    // 创建模板</span></span>
+<span class="line"><span style="color:#D4D4D4">    FMassEntityTemplate Template;</span></span>
+<span class="line"><span style="color:#9CDCFE">    Template</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddFragment</span><span style="color:#D4D4D4">&#x3C;FTransformFragment>();</span></span>
+<span class="line"><span style="color:#9CDCFE">    Template</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddFragment</span><span style="color:#D4D4D4">&#x3C;FRTSMovementFragment>();</span></span>
+<span class="line"><span style="color:#9CDCFE">    Template</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddFragment</span><span style="color:#D4D4D4">&#x3C;FRTSAttackFragment>();</span></span>
+<span class="line"><span style="color:#9CDCFE">    Template</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddTag</span><span style="color:#D4D4D4">&#x3C;FEnemyTag>();</span></span>
+<span class="line"><span style="color:#9CDCFE">    Template</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">AddTag</span><span style="color:#D4D4D4">&#x3C;FMovingTag>();</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#6A9955">    // 批量生成</span></span>
+<span class="line"><span style="color:#D4D4D4">    TArray&#x3C;FMassEntityHandle> Entities;</span></span>
+<span class="line"><span style="color:#9CDCFE">    Manager</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">CreateEntities</span><span style="color:#D4D4D4">(Template, Count, Entities);</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#6A9955">    // 初始化位置（圆形分布）</span></span>
+<span class="line"><span style="color:#C586C0">    for</span><span style="color:#D4D4D4"> (int32 i = </span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">; i &#x3C; Count; ++i)</span></span>
+<span class="line"><span style="color:#D4D4D4">    {</span></span>
+<span class="line"><span style="color:#569CD6">        float</span><span style="color:#D4D4D4"> Angle = (</span><span style="color:#569CD6">float</span><span style="color:#D4D4D4">)i / Count * </span><span style="color:#B5CEA8">2.0f</span><span style="color:#D4D4D4"> * PI;</span></span>
+<span class="line"><span style="color:#569CD6">        float</span><span style="color:#D4D4D4"> Radius = </span><span style="color:#B5CEA8">1000.0f</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">        </span></span>
+<span class="line"><span style="color:#D4D4D4">        FVector </span><span style="color:#DCDCAA">Position</span><span style="color:#D4D4D4">(Radius * </span><span style="color:#4EC9B0">FMath</span><span style="color:#D4D4D4">::</span><span style="color:#DCDCAA">Cos</span><span style="color:#D4D4D4">(Angle), </span></span>
+<span class="line"><span style="color:#D4D4D4">                        Radius * </span><span style="color:#4EC9B0">FMath</span><span style="color:#D4D4D4">::</span><span style="color:#DCDCAA">Sin</span><span style="color:#D4D4D4">(Angle), </span></span>
+<span class="line"><span style="color:#B5CEA8">                        0.0f</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">        </span></span>
+<span class="line"><span style="color:#D4D4D4">        FTransformFragment* Transform = </span></span>
+<span class="line"><span style="color:#9CDCFE">            Manager</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">GetFragmentData</span><span style="color:#D4D4D4">&#x3C;FTransformFragment>(</span><span style="color:#9CDCFE">Entities</span><span style="color:#D4D4D4">[i]);</span></span>
+<span class="line"><span style="color:#9CDCFE">        Transform</span><span style="color:#D4D4D4">-></span><span style="color:#9CDCFE">Position</span><span style="color:#D4D4D4"> = Position;</span></span>
+<span class="line"><span style="color:#D4D4D4">    }</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="性能对比">性能对比</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>方案</th><th>10000单位帧时间</th></tr></thead><tbody><tr><td>AActor Ticking</td><td>~16ms</td></tr><tr><td>Mass Framework</td><td>&#x3C;1ms</td></tr></tbody></table>
+<h2 id="调试工具">调试工具</h2>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#6A9955">// 开启Mass统计</span></span>
+<span class="line"><span style="color:#9CDCFE">wp</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">Runtime</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">ShowStats</span><span style="color:#B5CEA8"> 1</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A9955">// 可视化调试</span></span>
+<span class="line"><span style="color:#D4D4D4">CVarMassDrawEntities = </span><span style="color:#B5CEA8">1</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"></span></code></pre>
+<h2 id="总结">总结</h2>
+<p>Mass框架让处理大量相似实体变得简单高效，掌握ECS思维是关键。</p>  </div>  <nav class="post-navigation" data-astro-cid-lhwu4qwf><div class="nav-links" data-astro-cid-lhwu4qwf><a href="/posts/openclaw-ai-assistant" class="nav-link prev" data-astro-cid-lhwu4qwf><span class="nav-label" data-astro-cid-lhwu4qwf>Previous</span><span class="nav-title" data-astro-cid-lhwu4qwf>OpenClaw: AI助手框架完全指南</span></a><a href="/posts/graphics-pbr-shading" class="nav-link next" data-astro-cid-lhwu4qwf><span class="nav-label" data-astro-cid-lhwu4qwf>Next</span><span class="nav-title" data-astro-cid-lhwu4qwf>PBR着色器原理解析</span></a></div></nav> </article>  </main> <footer class="footer" data-astro-cid-sz7xmlte> <div class="footer-inner" data-astro-cid-sz7xmlte> <p class="copyright" data-astro-cid-sz7xmlte>
+&copy; 2026 Personal Tech Blog. All rights reserved.
+</p> </div> </footer>  </body></html>   

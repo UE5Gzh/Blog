@@ -1,0 +1,154 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="深入理解基于物理的渲染(PBR)着色器的工作原理"><title>PBR着色器原理解析 | Tech Blog</title><style>article.post{max-width:65ch;margin:0 auto;line-height:1.7}article.post h1,article.post h2,article.post h3,article.post h4,article.post h5,article.post h6{margin-top:2em;margin-bottom:.5em}article.post h1{font-size:2rem}article.post h2{font-size:1.5rem}article.post h3{font-size:1.25rem}.post-meta{display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center;margin-bottom:var(--space-6);padding-bottom:var(--space-4);border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:.875rem}.post-meta time{display:inline-flex;align-items:center}.post-meta .tags{display:flex;flex-wrap:wrap;gap:var(--space-2)}.post-meta .tag{font-size:.75rem;padding:.25rem .5rem;background-color:var(--bg-code);color:var(--accent);border-radius:var(--radius-sm)}.post-content{margin-top:var(--space-8)}.post-content p{margin-bottom:var(--space-4)}.post-content ul,.post-content ol{margin-bottom:var(--space-4);padding-left:1.5rem}.post-content li{margin-bottom:var(--space-2)}.post-content blockquote{border-left:4px solid var(--accent);padding-left:var(--space-4);margin:var(--space-4) 0;color:var(--text-secondary);font-style:italic}.post-content img{max-width:100%;height:auto;border-radius:var(--radius-md);margin:var(--space-4) 0}.post-content pre{margin:var(--space-4) 0}.post-content a{color:var(--accent);text-decoration:underline}.post-content a:hover{color:var(--accent-hover)}.post-content hr{border:none;border-top:1px solid var(--border);margin:var(--space-8) 0}.back-link{display:inline-flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-6);color:var(--accent);font-size:.875rem}.back-link:hover{color:var(--accent-hover)}.table-of-contents[data-astro-cid-xvrfupwn]{margin-bottom:var(--space-6);padding:var(--space-4);background:var(--bg-secondary);border-radius:var(--radius-md);border:1px solid var(--border)}.toc-title[data-astro-cid-xvrfupwn]{font-size:.875rem;font-weight:600;margin-bottom:var(--space-3);margin-top:0;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}.toc-list[data-astro-cid-xvrfupwn]{list-style:none;padding:0;margin:0}.toc-item[data-astro-cid-xvrfupwn]{margin-bottom:var(--space-2)}.toc-item[data-astro-cid-xvrfupwn].depth-3{padding-left:var(--space-4)}.toc-item[data-astro-cid-xvrfupwn] a[data-astro-cid-xvrfupwn]{color:var(--text-secondary);font-size:.875rem}.toc-item[data-astro-cid-xvrfupwn] a[data-astro-cid-xvrfupwn]:hover{color:var(--accent)}.post-navigation[data-astro-cid-lhwu4qwf]{margin-top:var(--space-8);padding-top:var(--space-6);border-top:1px solid var(--border)}.nav-links[data-astro-cid-lhwu4qwf]{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}.nav-link[data-astro-cid-lhwu4qwf]{display:flex;flex-direction:column;padding:var(--space-4);background:var(--bg-secondary);border-radius:var(--radius-md);border:1px solid var(--border)}.nav-link[data-astro-cid-lhwu4qwf]:hover{border-color:var(--accent)}.nav-link[data-astro-cid-lhwu4qwf].next{text-align:right}.nav-label[data-astro-cid-lhwu4qwf]{font-size:.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:var(--space-1)}.nav-title[data-astro-cid-lhwu4qwf]{color:var(--accent);font-weight:500}@media (max-width: 640px){.nav-links[data-astro-cid-lhwu4qwf]{grid-template-columns:1fr}}.reading-time[data-astro-cid-gjtny2mx]{display:inline-flex;align-items:center;color:var(--text-secondary)}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.D1Ffo2Ur.css"><script type="module">function o(){document.querySelectorAll("article.post pre").forEach(e=>{if(e.querySelector(".copy-button"))return;const t=document.createElement("button");t.textContent="Copy",t.className="copy-button",t.setAttribute("aria-label","Copy code to clipboard"),e.style.position="relative",e.appendChild(t),t.addEventListener("click",()=>{const n=e.querySelector("code")?.textContent||"";navigator.clipboard.writeText(n).then(()=>{t.textContent="Copied!",setTimeout(()=>{t.textContent="Copy"},2e3)}).catch(()=>{t.textContent="Error",setTimeout(()=>{t.textContent="Copy"},2e3)})})})}o();document.addEventListener("astro:page-load",o);
+</script></head> <body> <header class="header" data-astro-cid-3ef6ksr2> <div class="header-inner" data-astro-cid-3ef6ksr2> <a href="/" class="logo" data-astro-cid-3ef6ksr2>PBR着色器原理解析</a> <nav class="nav" data-astro-cid-3ef6ksr2> <a href="/" data-astro-cid-3ef6ksr2>Home</a> <a href="/about" data-astro-cid-3ef6ksr2>Author</a> <!-- Categories Dropdown --> <div class="dropdown" data-astro-cid-3ef6ksr2> <button class="dropdown-trigger" aria-haspopup="true" data-astro-cid-3ef6ksr2>
+Categories
+</button> <div class="dropdown-menu" data-astro-cid-3ef6ksr2> <a href="/categories/General" data-astro-cid-3ef6ksr2>General</a> <a href="/categories/Unreal Engine" data-astro-cid-3ef6ksr2>Unreal Engine</a> <a href="/categories/Unity" data-astro-cid-3ef6ksr2>Unity</a> <a href="/categories/Algorithm" data-astro-cid-3ef6ksr2>Algorithm</a> <a href="/categories/Graphics" data-astro-cid-3ef6ksr2>Graphics</a> <a href="/categories/AI" data-astro-cid-3ef6ksr2>AI</a> <a href="/categories/Others" data-astro-cid-3ef6ksr2>Others</a> </div> </div> <!-- Tags Dropdown --> <div class="dropdown" data-astro-cid-3ef6ksr2> <button class="dropdown-trigger" aria-haspopup="true" data-astro-cid-3ef6ksr2>
+Tags
+</button> <div class="dropdown-menu" data-astro-cid-3ef6ksr2> <a href="/tags/Announcement" data-astro-cid-3ef6ksr2>Announcement</a> <a href="/tags/UE5" data-astro-cid-3ef6ksr2>UE5</a> <a href="/tags/Unity6" data-astro-cid-3ef6ksr2>Unity6</a> <a href="/tags/GAS" data-astro-cid-3ef6ksr2>GAS</a> <a href="/tags/Mass" data-astro-cid-3ef6ksr2>Mass</a> <a href="/tags/Shader" data-astro-cid-3ef6ksr2>Shader</a> <a href="/tags/OpenClaw" data-astro-cid-3ef6ksr2>OpenClaw</a> </div> </div> <!-- Archive Link --> <a href="/archive" data-astro-cid-3ef6ksr2>Archive</a> </nav> </div> </header>  <main>  <article class="post" data-astro-cid-gjtny2mx> <a href="/" class="back-link" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-gjtny2mx> <polyline points="15 18 9 12 15 6" data-astro-cid-gjtny2mx></polyline> </svg>
+Back to posts
+</a> <header data-astro-cid-gjtny2mx> <h1 data-astro-cid-gjtny2mx>PBR着色器原理解析</h1> <div class="post-meta" data-astro-cid-gjtny2mx> <time datetime="2026-03-28T00:00:00.000Z" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;" data-astro-cid-gjtny2mx> <rect x="3" y="4" width="18" height="18" rx="2" ry="2" data-astro-cid-gjtny2mx></rect> <line x1="16" y1="2" x2="16" y2="6" data-astro-cid-gjtny2mx></line> <line x1="8" y1="2" x2="8" y2="6" data-astro-cid-gjtny2mx></line> <line x1="3" y1="10" x2="21" y2="10" data-astro-cid-gjtny2mx></line> </svg> March 28, 2026 </time> <span class="reading-time" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;" data-astro-cid-gjtny2mx> <circle cx="12" cy="12" r="10" data-astro-cid-gjtny2mx></circle> <polyline points="12 6 12 12 16 14" data-astro-cid-gjtny2mx></polyline> </svg> 4 min read </span> <div class="tags" data-astro-cid-gjtny2mx> <span class="tag" data-astro-cid-gjtny2mx>PBR</span><span class="tag" data-astro-cid-gjtny2mx>Shader</span><span class="tag" data-astro-cid-gjtny2mx>渲染技术</span> </div> </div>  <nav class="table-of-contents" data-astro-cid-xvrfupwn><h2 class="toc-title" data-astro-cid-xvrfupwn>On this page</h2><ul class="toc-list" data-astro-cid-xvrfupwn><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#什么是pbr" data-astro-cid-xvrfupwn>什么是PBR</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#核心概念" data-astro-cid-xvrfupwn>核心概念</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#brdf-双向反射分布函数" data-astro-cid-xvrfupwn>BRDF (双向反射分布函数)</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#能量守恒" data-astro-cid-xvrfupwn>能量守恒</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#光照模型" data-astro-cid-xvrfupwn>光照模型</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#迪士尼原则brdf" data-astro-cid-xvrfupwn>迪士尼原则BRDF</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#简化公式" data-astro-cid-xvrfupwn>简化公式</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#pbr-shader实现" data-astro-cid-xvrfupwn>PBR Shader实现</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#基础结构" data-astro-cid-xvrfupwn>基础结构</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#计算函数" data-astro-cid-xvrfupwn>计算函数</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#主函数" data-astro-cid-xvrfupwn>主函数</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#实用技巧" data-astro-cid-xvrfupwn>实用技巧</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#粗糙度贴图" data-astro-cid-xvrfupwn>粗糙度贴图</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#环境反射" data-astro-cid-xvrfupwn>环境反射</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#总结" data-astro-cid-xvrfupwn>总结</a></li></ul></nav> </header> <div class="post-content" data-astro-cid-gjtny2mx>  <h1 id="pbr着色器原理解析">PBR着色器原理解析</h1>
+<h2 id="什么是pbr">什么是PBR</h2>
+<p>PBR (Physically Based Rendering) 基于物理的渲染，通过数学模型更真实地模拟光与材质的交互。</p>
+<h2 id="核心概念">核心概念</h2>
+<h3 id="brdf-双向反射分布函数">BRDF (双向反射分布函数)</h3>
+<p>BRDF描述光线如何从表面反射：</p>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>BRDF = f(入射方向, 出射方向, 材质属性)</span></span>
+<span class="line"><span></span></span></code></pre>
+<h3 id="能量守恒">能量守恒</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>出射光能量 ≤ 入射光能量</span></span>
+<span class="line"><span></span></span></code></pre>
+<h2 id="光照模型">光照模型</h2>
+<h3 id="迪士尼原则brdf">迪士尼原则BRDF</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td>Base Color</td><td>基础颜色</td></tr><tr><td>Metallic</td><td>金属度 (0-1)</td></tr><tr><td>Roughness</td><td>粗糙度 (0-1)</td></tr><tr><td>Specular</td><td>高光强度</td></tr><tr><td>Normal</td><td>法线贴图</td></tr></tbody></table>
+<h3 id="简化公式">简化公式</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="glsl"><code><span class="line"><span style="color:#569CD6">vec3</span><span style="color:#D4D4D4"> diffuse = (</span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4"> - metallic) * baseColor * (</span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4"> - dielectric);</span></span>
+<span class="line"><span style="color:#569CD6">vec3</span><span style="color:#D4D4D4"> specular = </span><span style="color:#DCDCAA">lerp</span><span style="color:#D4D4D4">(dielectric, baseColor, metallic) * roughness;</span></span>
+<span class="line"></span></code></pre>
+<h2 id="pbr-shader实现">PBR Shader实现</h2>
+<h3 id="基础结构">基础结构</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="glsl"><code><span class="line"><span style="color:#569CD6">struct</span><span style="color:#D4D4D4"> PBRParams {</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 albedo;</span><span style="color:#6A9955">      // 基础色</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> metallic;</span><span style="color:#6A9955">   // 金属度</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> roughness;</span><span style="color:#6A9955">   // 粗糙度</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 normal;</span><span style="color:#6A9955">       // 法线</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 viewDir;</span><span style="color:#6A9955">     // 视线方向</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 lightDir;</span><span style="color:#6A9955">    // 光源方向</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 lightColor;</span><span style="color:#6A9955">   // 光源颜色</span></span>
+<span class="line"><span style="color:#D4D4D4">};</span></span>
+<span class="line"></span></code></pre>
+<h3 id="计算函数">计算函数</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="glsl"><code><span class="line"><span style="color:#569CD6">float</span><span style="color:#DCDCAA"> DistributionGGX</span><span style="color:#D4D4D4">(vec3 </span><span style="color:#9CDCFE">N</span><span style="color:#D4D4D4">, vec3 </span><span style="color:#9CDCFE">H</span><span style="color:#D4D4D4">, </span><span style="color:#569CD6">float</span><span style="color:#9CDCFE"> roughness</span><span style="color:#D4D4D4">) {</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> a = roughness * roughness;</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> a2 = a * a;</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> NdotH = </span><span style="color:#DCDCAA">max</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">dot</span><span style="color:#D4D4D4">(N, H), </span><span style="color:#B5CEA8">0.0</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> NdotH2 = NdotH * NdotH;</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> num = a2;</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> denom = (NdotH2 * (a2 - </span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4">) + </span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">    denom = </span><span style="color:#B5CEA8">3.14159</span><span style="color:#D4D4D4"> * denom * denom;</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#C586C0">    return</span><span style="color:#D4D4D4"> num / denom;</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#569CD6">float</span><span style="color:#DCDCAA"> GeometrySchlickGGX</span><span style="color:#D4D4D4">(</span><span style="color:#569CD6">float</span><span style="color:#9CDCFE"> NdotV</span><span style="color:#D4D4D4">, </span><span style="color:#569CD6">float</span><span style="color:#9CDCFE"> roughness</span><span style="color:#D4D4D4">) {</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> r = roughness + </span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> k = (r * r) / </span><span style="color:#B5CEA8">8.0</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> num = NdotV;</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> denom = num * (</span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4"> - k) + k;</span></span>
+<span class="line"><span style="color:#C586C0">    return</span><span style="color:#D4D4D4"> num / denom;</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#569CD6">float</span><span style="color:#DCDCAA"> GeometrySmith</span><span style="color:#D4D4D4">(vec3 </span><span style="color:#9CDCFE">N</span><span style="color:#D4D4D4">, vec3 </span><span style="color:#9CDCFE">V</span><span style="color:#D4D4D4">, vec3 </span><span style="color:#9CDCFE">L</span><span style="color:#D4D4D4">, </span><span style="color:#569CD6">float</span><span style="color:#9CDCFE"> roughness</span><span style="color:#D4D4D4">) {</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> NdotV = </span><span style="color:#DCDCAA">max</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">dot</span><span style="color:#D4D4D4">(N, V), </span><span style="color:#B5CEA8">0.0</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> NdotL = </span><span style="color:#DCDCAA">max</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">dot</span><span style="color:#D4D4D4">(N, L), </span><span style="color:#B5CEA8">0.0</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> ggx2 = </span><span style="color:#DCDCAA">GeometrySchlickGGX</span><span style="color:#D4D4D4">(NdotV, roughness);</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> ggx1 = </span><span style="color:#DCDCAA">GeometrySchlickGGX</span><span style="color:#D4D4D4">(NdotL, roughness);</span></span>
+<span class="line"><span style="color:#C586C0">    return</span><span style="color:#D4D4D4"> ggx1 * ggx2;</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#569CD6">vec3</span><span style="color:#DCDCAA"> fresnelSchlick</span><span style="color:#D4D4D4">(</span><span style="color:#569CD6">float</span><span style="color:#9CDCFE"> cosTheta</span><span style="color:#D4D4D4">, vec3 </span><span style="color:#9CDCFE">F0</span><span style="color:#D4D4D4">) {</span></span>
+<span class="line"><span style="color:#C586C0">    return</span><span style="color:#D4D4D4"> F0 + (</span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4"> - F0) * </span><span style="color:#DCDCAA">pow</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">clamp</span><span style="color:#D4D4D4">(</span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4"> - cosTheta, </span><span style="color:#B5CEA8">0.0</span><span style="color:#D4D4D4">, </span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4">), </span><span style="color:#B5CEA8">5.0</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h3 id="主函数">主函数</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="glsl"><code><span class="line"><span style="color:#569CD6">vec3</span><span style="color:#DCDCAA"> calculatePBR</span><span style="color:#D4D4D4">(PBRParams </span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">) {</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 F0 = </span><span style="color:#DCDCAA">mix</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">vec3</span><span style="color:#D4D4D4">(</span><span style="color:#B5CEA8">0.04</span><span style="color:#D4D4D4">), </span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">albedo</span><span style="color:#D4D4D4">, </span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">metallic</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#6A9955">    // 中间向量</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 N = </span><span style="color:#DCDCAA">normalize</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">normal</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 V = </span><span style="color:#DCDCAA">normalize</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">viewDir</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 L = </span><span style="color:#DCDCAA">normalize</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">lightDir</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 H = </span><span style="color:#DCDCAA">normalize</span><span style="color:#D4D4D4">(V + L);</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#6A9955">    // Cook-Torrance BRDF</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> D = </span><span style="color:#DCDCAA">DistributionGGX</span><span style="color:#D4D4D4">(N, H, </span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">roughness</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> G = </span><span style="color:#DCDCAA">GeometrySmith</span><span style="color:#D4D4D4">(N, V, L, </span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">roughness</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 F = </span><span style="color:#DCDCAA">fresnelSchlick</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">max</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">dot</span><span style="color:#D4D4D4">(H, V), </span><span style="color:#B5CEA8">0.0</span><span style="color:#D4D4D4">), F0);</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 numerator = D * G * F;</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> denominator = </span><span style="color:#B5CEA8">4.0</span><span style="color:#D4D4D4"> * </span><span style="color:#DCDCAA">max</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">dot</span><span style="color:#D4D4D4">(N, V), </span><span style="color:#B5CEA8">0.0</span><span style="color:#D4D4D4">) * </span><span style="color:#DCDCAA">max</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">dot</span><span style="color:#D4D4D4">(N, L), </span><span style="color:#B5CEA8">0.0</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 specular = numerator / </span><span style="color:#DCDCAA">max</span><span style="color:#D4D4D4">(denominator, </span><span style="color:#B5CEA8">0.001</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#6A9955">    // 漫反射</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 kS = F;</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 kD = </span><span style="color:#DCDCAA">vec3</span><span style="color:#D4D4D4">(</span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4">) - kS;</span></span>
+<span class="line"><span style="color:#D4D4D4">    kD *= </span><span style="color:#B5CEA8">1.0</span><span style="color:#D4D4D4"> - </span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">metallic</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">    vec3 diffuse = kD * </span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">albedo</span><span style="color:#D4D4D4"> / </span><span style="color:#B5CEA8">3.14159</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#6A9955">    // 最终光照</span></span>
+<span class="line"><span style="color:#569CD6">    float</span><span style="color:#D4D4D4"> NdotL = </span><span style="color:#DCDCAA">max</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">dot</span><span style="color:#D4D4D4">(N, L), </span><span style="color:#B5CEA8">0.0</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#C586C0">    return</span><span style="color:#D4D4D4"> (diffuse + specular) * </span><span style="color:#9CDCFE">params</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">lightColor</span><span style="color:#D4D4D4"> * NdotL;</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="实用技巧">实用技巧</h2>
+<h3 id="粗糙度贴图">粗糙度贴图</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="glsl"><code><span class="line"><span style="color:#6A9955">// 从纹理采样</span></span>
+<span class="line"><span style="color:#569CD6">float</span><span style="color:#D4D4D4"> roughness = </span><span style="color:#DCDCAA">texture</span><span style="color:#D4D4D4">(roughnessMap, uv).r;</span></span>
+<span class="line"><span style="color:#D4D4D4">roughness = roughness * roughness;</span><span style="color:#6A9955"> // gamma校正</span></span>
+<span class="line"></span></code></pre>
+<h3 id="环境反射">环境反射</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="glsl"><code><span class="line"><span style="color:#569CD6">vec3</span><span style="color:#D4D4D4"> R = </span><span style="color:#DCDCAA">reflect</span><span style="color:#D4D4D4">(-V, N);</span></span>
+<span class="line"><span style="color:#569CD6">vec3</span><span style="color:#D4D4D4"> envColor = </span><span style="color:#DCDCAA">texture</span><span style="color:#D4D4D4">(envMap, R).rgb;</span></span>
+<span class="line"><span style="color:#569CD6">vec3</span><span style="color:#D4D4D4"> F = </span><span style="color:#DCDCAA">fresnelSchlick</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">max</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">dot</span><span style="color:#D4D4D4">(N, V), </span><span style="color:#B5CEA8">0.0</span><span style="color:#D4D4D4">), F0);</span></span>
+<span class="line"><span style="color:#569CD6">vec3</span><span style="color:#D4D4D4"> envReflection = envColor * F;</span></span>
+<span class="line"></span></code></pre>
+<h2 id="总结">总结</h2>
+<p>PBR优势：</p>
+<ol>
+<li>视觉效果更真实</li>
+<li>光照参数更直观</li>
+<li>环境适应性更强</li>
+</ol>
+<p>掌握PBR需要理解数学原理，但实现起来有规律可循。</p>  </div>  <nav class="post-navigation" data-astro-cid-lhwu4qwf><div class="nav-links" data-astro-cid-lhwu4qwf><a href="/posts/mass-practical-guide" class="nav-link prev" data-astro-cid-lhwu4qwf><span class="nav-label" data-astro-cid-lhwu4qwf>Previous</span><span class="nav-title" data-astro-cid-lhwu4qwf>UE5 Mass框架实战：从入门到精通</span></a><a href="/posts/gas-gameplay-ability-system" class="nav-link next" data-astro-cid-lhwu4qwf><span class="nav-label" data-astro-cid-lhwu4qwf>Next</span><span class="nav-title" data-astro-cid-lhwu4qwf>Unity GAS游戏能力系统完全指南</span></a></div></nav> </article>  </main> <footer class="footer" data-astro-cid-sz7xmlte> <div class="footer-inner" data-astro-cid-sz7xmlte> <p class="copyright" data-astro-cid-sz7xmlte>
+&copy; 2026 Personal Tech Blog. All rights reserved.
+</p> </div> </footer>  </body></html>   

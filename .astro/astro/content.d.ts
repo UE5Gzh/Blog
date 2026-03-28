@@ -151,10 +151,42 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"posts": {
-"code-example.md": {
-	id: "code-example.md";
-  slug: "code-example";
+		"Templater": {
+"USAGE_GUIDE.md": {
+	id: "USAGE_GUIDE.md";
+  slug: "usage_guide";
+  body: string;
+  collection: "Templater";
+  data: any
+} & { render(): Render[".md"] };
+"blog-post-template.md": {
+	id: "blog-post-template.md";
+  slug: "blog-post-template";
+  body: string;
+  collection: "Templater";
+  data: any
+} & { render(): Render[".md"] };
+};
+"images": {
+"ue5-mass-cover.jpg.md": {
+	id: "ue5-mass-cover.jpg.md";
+  slug: "ue5-mass-coverjpg";
+  body: string;
+  collection: "images";
+  data: any
+} & { render(): Render[".md"] };
+};
+"posts": {
+"algorithm-binary-search-tree.md": {
+	id: "algorithm-binary-search-tree.md";
+  slug: "algorithm-binary-search-tree";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"announcement-blog-launch.md": {
+	id: "announcement-blog-launch.md";
+  slug: "announcement-blog-launch";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">
@@ -166,9 +198,128 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
-"hello-world.md": {
-	id: "hello-world.md";
-  slug: "hello-world";
+"gas-gameplay-ability-system.md": {
+	id: "gas-gameplay-ability-system.md";
+  slug: "gas-gameplay-ability-system";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"graphics-pbr-shading.md": {
+	id: "graphics-pbr-shading.md";
+  slug: "graphics-pbr-shading";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"mass-practical-guide.md": {
+	id: "mass-practical-guide.md";
+  slug: "mass-practical-guide";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"openclaw-ai-assistant.md": {
+	id: "openclaw-ai-assistant.md";
+  slug: "openclaw-ai-assistant";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"ue5-world-partition.md": {
+	id: "ue5-world-partition.md";
+  slug: "ue5-world-partition";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (10).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (10).md";
+  slug: "unity6-srp-hdrp-urp---副本-10";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (11).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (11).md";
+  slug: "unity6-srp-hdrp-urp---副本-11";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (12).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (12).md";
+  slug: "unity6-srp-hdrp-urp---副本-12";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (2).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (2).md";
+  slug: "unity6-srp-hdrp-urp---副本-2";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (3).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (3).md";
+  slug: "unity6-srp-hdrp-urp---副本-3";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (4).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (4).md";
+  slug: "unity6-srp-hdrp-urp---副本-4";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (5).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (5).md";
+  slug: "unity6-srp-hdrp-urp---副本-5";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (6).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (6).md";
+  slug: "unity6-srp-hdrp-urp---副本-6";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (7).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (7).md";
+  slug: "unity6-srp-hdrp-urp---副本-7";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (8).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (8).md";
+  slug: "unity6-srp-hdrp-urp---副本-8";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本 (9).md": {
+	id: "unity6-srp-hdrp-urp - 副本 (9).md";
+  slug: "unity6-srp-hdrp-urp---副本-9";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp - 副本.md": {
+	id: "unity6-srp-hdrp-urp - 副本.md";
+  slug: "unity6-srp-hdrp-urp---副本";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"unity6-srp-hdrp-urp.md": {
+	id: "unity6-srp-hdrp-urp.md";
+  slug: "unity6-srp-hdrp-urp";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">

@@ -12,7 +12,23 @@
       "Skill(gsd:plan-phase)",
       "Skill(gsd:execute-phase)",
       "Bash(npm run:*)",
-      "mcp__plugin_supabase_supabase__get_cost"
+      "mcp__plugin_supabase_supabase__get_cost",
+      "Skill(gsd:progress)",
+      "Bash(npx astro:*)",
+      "Bash(grep -E \"^[0-9]+$\")",
+      "Bash(curl -s http://localhost:4321/)",
+      "WebFetch(domain:docs.astro.build)",
+      "Bash(curl -s http://localhost:4321/?page=1)",
+      "Bash(curl -s http://localhost:4321/?page=2)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(curl -s http://localhost:4321/1)",
+      "Bash(find dist/categories -name *.html -type f)",
+      "Bash(grep:*)",
+      "Bash(find dist/categories -type f -name *.html)",
+      "Bash(find dist/tags -type f -name *.html)",
+      "Bash(git add:*)",
+      "Bash(git reset:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

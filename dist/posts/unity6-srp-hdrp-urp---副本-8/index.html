@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="深入了解Unity 6的Scriptable Render Pipeline，包括HDRP和URP的特性和选择指南"><title>Unity6渲染管线全面解析SRP/HDRP/URP | Tech Blog</title><style>article.post{max-width:65ch;margin:0 auto;line-height:1.7}article.post h1,article.post h2,article.post h3,article.post h4,article.post h5,article.post h6{margin-top:2em;margin-bottom:.5em}article.post h1{font-size:2rem}article.post h2{font-size:1.5rem}article.post h3{font-size:1.25rem}.post-meta{display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center;margin-bottom:var(--space-6);padding-bottom:var(--space-4);border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:.875rem}.post-meta time{display:inline-flex;align-items:center}.post-meta .tags{display:flex;flex-wrap:wrap;gap:var(--space-2)}.post-meta .tag{font-size:.75rem;padding:.25rem .5rem;background-color:var(--bg-code);color:var(--accent);border-radius:var(--radius-sm)}.post-content{margin-top:var(--space-8)}.post-content p{margin-bottom:var(--space-4)}.post-content ul,.post-content ol{margin-bottom:var(--space-4);padding-left:1.5rem}.post-content li{margin-bottom:var(--space-2)}.post-content blockquote{border-left:4px solid var(--accent);padding-left:var(--space-4);margin:var(--space-4) 0;color:var(--text-secondary);font-style:italic}.post-content img{max-width:100%;height:auto;border-radius:var(--radius-md);margin:var(--space-4) 0}.post-content pre{margin:var(--space-4) 0}.post-content a{color:var(--accent);text-decoration:underline}.post-content a:hover{color:var(--accent-hover)}.post-content hr{border:none;border-top:1px solid var(--border);margin:var(--space-8) 0}.back-link{display:inline-flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-6);color:var(--accent);font-size:.875rem}.back-link:hover{color:var(--accent-hover)}.table-of-contents[data-astro-cid-xvrfupwn]{margin-bottom:var(--space-6);padding:var(--space-4);background:var(--bg-secondary);border-radius:var(--radius-md);border:1px solid var(--border)}.toc-title[data-astro-cid-xvrfupwn]{font-size:.875rem;font-weight:600;margin-bottom:var(--space-3);margin-top:0;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}.toc-list[data-astro-cid-xvrfupwn]{list-style:none;padding:0;margin:0}.toc-item[data-astro-cid-xvrfupwn]{margin-bottom:var(--space-2)}.toc-item[data-astro-cid-xvrfupwn].depth-3{padding-left:var(--space-4)}.toc-item[data-astro-cid-xvrfupwn] a[data-astro-cid-xvrfupwn]{color:var(--text-secondary);font-size:.875rem}.toc-item[data-astro-cid-xvrfupwn] a[data-astro-cid-xvrfupwn]:hover{color:var(--accent)}.post-navigation[data-astro-cid-lhwu4qwf]{margin-top:var(--space-8);padding-top:var(--space-6);border-top:1px solid var(--border)}.nav-links[data-astro-cid-lhwu4qwf]{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}.nav-link[data-astro-cid-lhwu4qwf]{display:flex;flex-direction:column;padding:var(--space-4);background:var(--bg-secondary);border-radius:var(--radius-md);border:1px solid var(--border)}.nav-link[data-astro-cid-lhwu4qwf]:hover{border-color:var(--accent)}.nav-link[data-astro-cid-lhwu4qwf].next{text-align:right}.nav-label[data-astro-cid-lhwu4qwf]{font-size:.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:var(--space-1)}.nav-title[data-astro-cid-lhwu4qwf]{color:var(--accent);font-weight:500}@media (max-width: 640px){.nav-links[data-astro-cid-lhwu4qwf]{grid-template-columns:1fr}}.reading-time[data-astro-cid-gjtny2mx]{display:inline-flex;align-items:center;color:var(--text-secondary)}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.D1Ffo2Ur.css"><script type="module">function o(){document.querySelectorAll("article.post pre").forEach(e=>{if(e.querySelector(".copy-button"))return;const t=document.createElement("button");t.textContent="Copy",t.className="copy-button",t.setAttribute("aria-label","Copy code to clipboard"),e.style.position="relative",e.appendChild(t),t.addEventListener("click",()=>{const n=e.querySelector("code")?.textContent||"";navigator.clipboard.writeText(n).then(()=>{t.textContent="Copied!",setTimeout(()=>{t.textContent="Copy"},2e3)}).catch(()=>{t.textContent="Error",setTimeout(()=>{t.textContent="Copy"},2e3)})})})}o();document.addEventListener("astro:page-load",o);
+</script></head> <body> <header class="header" data-astro-cid-3ef6ksr2> <div class="header-inner" data-astro-cid-3ef6ksr2> <a href="/" class="logo" data-astro-cid-3ef6ksr2>Unity6渲染管线全面解析SRP/HDRP/URP</a> <nav class="nav" data-astro-cid-3ef6ksr2> <a href="/" data-astro-cid-3ef6ksr2>Home</a> <a href="/about" data-astro-cid-3ef6ksr2>Author</a> <!-- Categories Dropdown --> <div class="dropdown" data-astro-cid-3ef6ksr2> <button class="dropdown-trigger" aria-haspopup="true" data-astro-cid-3ef6ksr2>
+Categories
+</button> <div class="dropdown-menu" data-astro-cid-3ef6ksr2> <a href="/categories/General" data-astro-cid-3ef6ksr2>General</a> <a href="/categories/Unreal Engine" data-astro-cid-3ef6ksr2>Unreal Engine</a> <a href="/categories/Unity" data-astro-cid-3ef6ksr2>Unity</a> <a href="/categories/Algorithm" data-astro-cid-3ef6ksr2>Algorithm</a> <a href="/categories/Graphics" data-astro-cid-3ef6ksr2>Graphics</a> <a href="/categories/AI" data-astro-cid-3ef6ksr2>AI</a> <a href="/categories/Others" data-astro-cid-3ef6ksr2>Others</a> </div> </div> <!-- Tags Dropdown --> <div class="dropdown" data-astro-cid-3ef6ksr2> <button class="dropdown-trigger" aria-haspopup="true" data-astro-cid-3ef6ksr2>
+Tags
+</button> <div class="dropdown-menu" data-astro-cid-3ef6ksr2> <a href="/tags/Announcement" data-astro-cid-3ef6ksr2>Announcement</a> <a href="/tags/UE5" data-astro-cid-3ef6ksr2>UE5</a> <a href="/tags/Unity6" data-astro-cid-3ef6ksr2>Unity6</a> <a href="/tags/GAS" data-astro-cid-3ef6ksr2>GAS</a> <a href="/tags/Mass" data-astro-cid-3ef6ksr2>Mass</a> <a href="/tags/Shader" data-astro-cid-3ef6ksr2>Shader</a> <a href="/tags/OpenClaw" data-astro-cid-3ef6ksr2>OpenClaw</a> </div> </div> <!-- Archive Link --> <a href="/archive" data-astro-cid-3ef6ksr2>Archive</a> </nav> </div> </header>  <main>  <article class="post" data-astro-cid-gjtny2mx> <a href="/" class="back-link" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-gjtny2mx> <polyline points="15 18 9 12 15 6" data-astro-cid-gjtny2mx></polyline> </svg>
+Back to posts
+</a> <header data-astro-cid-gjtny2mx> <h1 data-astro-cid-gjtny2mx>Unity6渲染管线全面解析SRP/HDRP/URP</h1> <div class="post-meta" data-astro-cid-gjtny2mx> <time datetime="2026-03-28T00:00:00.000Z" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;" data-astro-cid-gjtny2mx> <rect x="3" y="4" width="18" height="18" rx="2" ry="2" data-astro-cid-gjtny2mx></rect> <line x1="16" y1="2" x2="16" y2="6" data-astro-cid-gjtny2mx></line> <line x1="8" y1="2" x2="8" y2="6" data-astro-cid-gjtny2mx></line> <line x1="3" y1="10" x2="21" y2="10" data-astro-cid-gjtny2mx></line> </svg> March 28, 2026 </time> <span class="reading-time" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;" data-astro-cid-gjtny2mx> <circle cx="12" cy="12" r="10" data-astro-cid-gjtny2mx></circle> <polyline points="12 6 12 12 16 14" data-astro-cid-gjtny2mx></polyline> </svg> 3 min read </span> <div class="tags" data-astro-cid-gjtny2mx> <span class="tag" data-astro-cid-gjtny2mx>Unity6</span> </div> </div>  <nav class="table-of-contents" data-astro-cid-xvrfupwn><h2 class="toc-title" data-astro-cid-xvrfupwn>On this page</h2><ul class="toc-list" data-astro-cid-xvrfupwn><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#scriptable-render-pipeline-简介" data-astro-cid-xvrfupwn>Scriptable Render Pipeline 简介</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#内置管线-vs-srp" data-astro-cid-xvrfupwn>内置管线 vs SRP</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#urp-universal-render-pipeline" data-astro-cid-xvrfupwn>URP (Universal Render Pipeline)</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#适用场景" data-astro-cid-xvrfupwn>适用场景</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#urp设置" data-astro-cid-xvrfupwn>URP设置</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#urp特性" data-astro-cid-xvrfupwn>URP特性</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#hdrp-high-definition-render-pipeline" data-astro-cid-xvrfupwn>HDRP (High Definition Render Pipeline)</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#适用场景-1" data-astro-cid-xvrfupwn>适用场景</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#hdrp物理光照" data-astro-cid-xvrfupwn>HDRP物理光照</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#hdrp配置" data-astro-cid-xvrfupwn>HDRP配置</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#如何选择" data-astro-cid-xvrfupwn>如何选择</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#shader-graph集成" data-astro-cid-xvrfupwn>Shader Graph集成</a></li><li class="toc-item depth-3" data-astro-cid-xvrfupwn><a href="#urp-shader-graph" data-astro-cid-xvrfupwn>URP Shader Graph</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#unity-6新特性" data-astro-cid-xvrfupwn>Unity 6新特性</a></li><li class="toc-item depth-2" data-astro-cid-xvrfupwn><a href="#总结" data-astro-cid-xvrfupwn>总结</a></li></ul></nav> </header> <div class="post-content" data-astro-cid-gjtny2mx>  <h1 id="unity6渲染管线全面解析">Unity6渲染管线全面解析</h1>
+<h2 id="scriptable-render-pipeline-简介">Scriptable Render Pipeline 简介</h2>
+<p>Unity 6推出了全新的SRP (Scriptable Render Pipeline)，让开发者完全控制渲染流程。</p>
+<h3 id="内置管线-vs-srp">内置管线 vs SRP</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>特性</th><th>Built-in</th><th>URP</th><th>HDRP</th></tr></thead><tbody><tr><td>灵活性</td><td>低</td><td>中</td><td>高</td></tr><tr><td>画质</td><td>一般</td><td>良好</td><td>影视级</td></tr><tr><td>性能</td><td>中等</td><td>优化</td><td>较高需求</td></tr><tr><td>学习曲线</td><td>低</td><td>中</td><td>高</td></tr></tbody></table>
+<h2 id="urp-universal-render-pipeline">URP (Universal Render Pipeline)</h2>
+<h3 id="适用场景">适用场景</h3>
+<ul>
+<li>移动平台</li>
+<li>低中端PC</li>
+<li>VR应用</li>
+<li>独立游戏</li>
+</ul>
+<h3 id="urp设置">URP设置</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#6A9955">// 创建URP Asset</span></span>
+<span class="line"><span style="color:#9CDCFE">AssetDatabase</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">CreateAsset</span><span style="color:#D4D4D4">(</span><span style="color:#DCDCAA">CreateInstance</span><span style="color:#D4D4D4">&#x3C;</span><span style="color:#4EC9B0">UniversalRenderPipelineAsset</span><span style="color:#D4D4D4">>(), </span><span style="color:#CE9178">"Assets/Settings/URPAsset.asset"</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A9955">// Project Settings配置</span></span>
+<span class="line"><span style="color:#9CDCFE">GraphicsSettings</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">renderPipelineAsset</span><span style="color:#D4D4D4"> = </span><span style="color:#9CDCFE">urpAsset</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"></span></code></pre>
+<h3 id="urp特性">URP特性</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="hlsl"><code><span class="line"><span style="color:#6A9955">// URP中的Shader实现</span></span>
+<span class="line"><span style="color:#D4D4D4">Shader </span><span style="color:#CE9178">"Custom/ToonShader"</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#D4D4D4">    Properties</span></span>
+<span class="line"><span style="color:#D4D4D4">    {</span></span>
+<span class="line"><span style="color:#DCDCAA">        _MainTex</span><span style="color:#D4D4D4"> (</span><span style="color:#CE9178">"Texture"</span><span style="color:#D4D4D4">, 2D) = </span><span style="color:#CE9178">"white"</span><span style="color:#D4D4D4"> {}</span></span>
+<span class="line"><span style="color:#DCDCAA">        _Color</span><span style="color:#D4D4D4"> (</span><span style="color:#CE9178">"Tint"</span><span style="color:#D4D4D4">, Color) = (</span><span style="color:#B5CEA8">1</span><span style="color:#D4D4D4">,</span><span style="color:#B5CEA8">1</span><span style="color:#D4D4D4">,</span><span style="color:#B5CEA8">1</span><span style="color:#D4D4D4">,</span><span style="color:#B5CEA8">1</span><span style="color:#D4D4D4">)</span></span>
+<span class="line"><span style="color:#D4D4D4">        [HDR] </span><span style="color:#DCDCAA">_Emission</span><span style="color:#D4D4D4"> (</span><span style="color:#CE9178">"Emission"</span><span style="color:#D4D4D4">, Color) = (</span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">,</span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">,</span><span style="color:#B5CEA8">0</span><span style="color:#D4D4D4">,</span><span style="color:#B5CEA8">1</span><span style="color:#D4D4D4">)</span></span>
+<span class="line"><span style="color:#D4D4D4">    }</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="hdrp-high-definition-render-pipeline">HDRP (High Definition Render Pipeline)</h2>
+<h3 id="适用场景-1">适用场景</h3>
+<ul>
+<li>主机游戏</li>
+<li>高端PC</li>
+<li>影视制作</li>
+<li>建筑可视化</li>
+</ul>
+<h3 id="hdrp物理光照">HDRP物理光照</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>特性</th><th>说明</th></tr></thead><tbody><tr><td>体积雾</td><td>体积渲染实现真实雾效</td></tr><tr><td>屏幕空间反射</td><td>SSR技术</td></tr><tr><td>光线追踪</td><td>支持RTX硬件加速</td></tr><tr><td>区域光</td><td>矩形/圆形/管线光源</td></tr></tbody></table>
+<h3 id="hdrp配置">HDRP配置</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#6A9955">// 启用光线追踪</span></span>
+<span class="line"><span style="color:#4EC9B0">HDRenderPipelineAsset</span><span style="color:#9CDCFE"> asset</span><span style="color:#D4D4D4"> = </span><span style="color:#DCDCAA">GetHDRenderPipelineAsset</span><span style="color:#D4D4D4">();</span></span>
+<span class="line"><span style="color:#4EC9B0">asset</span><span style="color:#9CDCFE"> rayTracing</span><span style="color:#D4D4D4"> = </span><span style="color:#569CD6">true</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#9CDCFE">asset</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">shaderRayTracing</span><span style="color:#D4D4D4"> = </span><span style="color:#569CD6">true</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"></span></code></pre>
+<h2 id="如何选择">如何选择</h2>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="mermaid"><code><span class="line"><span style="color:#D4D4D4">graph TD</span></span>
+<span class="line"><span style="color:#D4D4D4">    A[开始] --> B{目标平台?}</span></span>
+<span class="line"><span style="color:#D4D4D4">    B -->|移动/独立| C[URP]</span></span>
+<span class="line"><span style="color:#D4D4D4">    B -->|主机/PC| D{画质要求?}</span></span>
+<span class="line"><span style="color:#D4D4D4">    D -->|一般| C</span></span>
+<span class="line"><span style="color:#D4D4D4">    D -->|影视级| E[HDRP]</span></span>
+<span class="line"></span></code></pre>
+<h2 id="shader-graph集成">Shader Graph集成</h2>
+<h3 id="urp-shader-graph">URP Shader Graph</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#6A9955">// 创建Custom Function Node</span></span>
+<span class="line"><span style="color:#569CD6">public</span><span style="color:#569CD6"> class</span><span style="color:#4EC9B0"> CustomNode</span><span style="color:#D4D4D4"> : </span><span style="color:#4EC9B0">CodeFunctionNode</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#569CD6">    protected</span><span style="color:#569CD6"> override</span><span style="color:#569CD6"> string</span><span style="color:#DCDCAA"> GetFunctionName</span><span style="color:#D4D4D4">() => </span><span style="color:#CE9178">"CustomLighting"</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#569CD6">    protected</span><span style="color:#569CD6"> override</span><span style="color:#4EC9B0"> MethodDefinition</span><span style="color:#DCDCAA"> GetFunction</span><span style="color:#D4D4D4">()</span></span>
+<span class="line"><span style="color:#D4D4D4">    {</span></span>
+<span class="line"><span style="color:#C586C0">        return</span><span style="color:#DCDCAA"> GetFunction</span><span style="color:#D4D4D4">(</span><span style="color:#CE9178">"float3 CustomLight(float3 N, float3 V)"</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#D4D4D4">    }</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="unity-6新特性">Unity 6新特性</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>特性</th><th>URP</th><th>HDRP</th></tr></thead><tbody><tr><td>体积云</td><td>✅</td><td>✅</td></tr><tr><td>GPU光栅化</td><td>✅</td><td>✅</td></tr><tr><td>路径追踪</td><td>❌</td><td>✅预览</td></tr><tr><td>自适应探测</td><td>✅</td><td>✅</td></tr></tbody></table>
+<h2 id="总结">总结</h2>
+<ul>
+<li><strong>URP</strong>：轻量、跨平台、性能优先</li>
+<li><strong>HDRP</strong>：高画质、影视效果、硬件要求高</li>
+<li><strong>内置</strong>：兼容性最好，但灵活性差</li>
+</ul>
+<p>根据项目需求选择合适的渲染管线是成功的关键。</p>  </div>  <nav class="post-navigation" data-astro-cid-lhwu4qwf><div class="nav-links" data-astro-cid-lhwu4qwf><a href="/posts/unity6-srp-hdrp-urp---副本-9" class="nav-link prev" data-astro-cid-lhwu4qwf><span class="nav-label" data-astro-cid-lhwu4qwf>Previous</span><span class="nav-title" data-astro-cid-lhwu4qwf>Unity6渲染管线全面解析SRP/HDRP/URP</span></a><a href="/posts/unity6-srp-hdrp-urp---副本-7" class="nav-link next" data-astro-cid-lhwu4qwf><span class="nav-label" data-astro-cid-lhwu4qwf>Next</span><span class="nav-title" data-astro-cid-lhwu4qwf>Unity6渲染管线全面解析SRP/HDRP/URP</span></a></div></nav> </article>  </main> <footer class="footer" data-astro-cid-sz7xmlte> <div class="footer-inner" data-astro-cid-sz7xmlte> <p class="copyright" data-astro-cid-sz7xmlte>
+&copy; 2026 Personal Tech Blog. All rights reserved.
+</p> </div> </footer>  </body></html>   

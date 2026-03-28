@@ -4,14 +4,13 @@ import PostCard from '../components/PostCard.astro';
 import Search from '../components/Search.astro';
 import { getCollection } from 'astro:content';
 
-// Get all posts
 const allPosts = await getCollection('posts');
-
-// Filter to only published posts (draft: false)
 const posts = allPosts.filter(post => !post.data.draft);
-
-// Sort by date descending (newest first)
 posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const PAGE_SIZE = 9;
+const totalPages = Math.ceil(posts.length / PAGE_SIZE);
+const firstPagePosts = posts.slice(0, PAGE_SIZE);
 ---
 
 <BaseLayout title="Home" description="A personal technical blog for sharing programming tutorials and insights">
@@ -24,9 +23,9 @@ posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
   <section class="posts-section">
     <h2>Latest Posts</h2>
-    {posts.length > 0 ? (
+    {firstPagePosts.length > 0 ? (
       <div class="post-grid">
-        {posts.map(post => (
+        {firstPagePosts.map(post => (
           <PostCard post={post} />
         ))}
       </div>
@@ -34,6 +33,15 @@ posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
       <div class="empty-state">
         <h2>No posts yet</h2>
         <p>Check back soon for new content!</p>
+      </div>
+    )}
+
+    {/* Pagination */}
+    {totalPages > 1 && (
+      <div class="pagination">
+        <span class="page-link disabled">Previous</span>
+        <span class="page-info">Page 1 of {totalPages}</span>
+        <a href="/2" class="page-link">Next</a>
       </div>
     )}
   </section>
@@ -61,6 +69,40 @@ posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
   .posts-section h2 {
     margin-bottom: var(--space-6);
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+
+  .page-link {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .page-link:not(.disabled):hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .page-link.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .page-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
   }
 
   @media (max-width: 640px) {

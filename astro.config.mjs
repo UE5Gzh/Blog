@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import { remarkReadingTime } from './src/remark/reading-time.mjs';
 
 export default defineConfig({
-  site: 'https://your-blog-url.com',
+  site: 'http://localhost:4321',
   integrations: [sitemap(), mdx()],
   markdown: {
     remarkPlugins: [remarkReadingTime],
