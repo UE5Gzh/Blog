@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://your-blog-url.com',
-  integrations: [mdx(), sitemap()],
+  integrations: [sitemap(), mdx()],
   markdown: {
     shikiConfig: {
       theme: 'dark-plus',

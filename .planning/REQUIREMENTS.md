@@ -11,9 +11,9 @@
 | DISPLAY-01 | Phase 1 | Complete |
 | DISPLAY-02 | Phase 1 | Complete |
 | DISPLAY-03 | Phase 1 | Complete |
-| ORG-01 | Phase 2 | Pending |
-| ORG-02 | Phase 2 | Pending |
-| ORG-03 | Phase 2 | Pending |
+| ORG-01 | Phase 2 | Complete |
+| ORG-02 | Phase 2 | Complete |
+| ORG-03 | Phase 2 | Complete |
 | ENHANCE-01 | Phase 3 | Pending |
 | ENHANCE-02 | Phase 3 | Pending |
 | ENHANCE-03 | Phase 3 | Pending |
@@ -38,9 +38,9 @@
 
 ### Organization (ORG)
 
-- [ ] **ORG-01**: User can organize posts by categories (e.g., Frontend, Backend, DevOps)
-- [ ] **ORG-02**: User can tag posts with multiple tags for granular labeling
-- [ ] **ORG-03**: User can view an archive of posts organized by year/month
+- [x] **ORG-01**: User can organize posts by categories (e.g., Frontend, Backend, DevOps)
+- [x] **ORG-02**: User can tag posts with multiple tags for granular labeling
+- [x] **ORG-03**: User can view an archive of posts organized by year/month
 
 ---
 

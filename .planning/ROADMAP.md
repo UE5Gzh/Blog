@@ -5,7 +5,7 @@
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
 | 1 | Core Blog | 1/1 | Complete   | 2026-03-27 |
-| 2 | Organization | Content discovery and navigation | ORG-01, ORG-02, ORG-03 | 4 |
+| 2 | Organization | Content discovery and navigation | Complete    | 2026-03-28 |
 | 3 | Enhancements | User experience improvements | ENHANCE-01, ENHANCE-02, ENHANCE-03, ENHANCE-04 | 4 |
 
 ---
@@ -66,7 +66,7 @@
 - Generate RSS feed with all published posts
 - Generate sitemap.xml
 
-**Plans:** 1/1 plans pending
+**Plans:** 2/1 plans complete
 
 **Plan list:**
 - [ ] 02-organization/02-PLAN.md -- Foundation (RSS, sitemap, header dropdowns) + Content pages (category, tag, archive)
