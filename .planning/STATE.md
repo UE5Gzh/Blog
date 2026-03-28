@@ -42,9 +42,10 @@ progress:
 
 ### Phase 3: Enhancements
 
-- Status: In Progress
+- Status: In Progress (Plan 03-02 complete)
 - Started: 2026-03-28
 - Completed: —
+- Plans Completed: 03-02
 
 ## Requirement Status
 
@@ -60,10 +61,10 @@ progress:
 | ORG-01 | Category pages | 2 | Complete |
 | ORG-02 | Tag pages | 2 | Complete |
 | ORG-03 | Archive by date | 2 | Complete |
-| ENHANCE-01 | Full-text search | 3 | Pending |
-| ENHANCE-02 | Table of contents | 3 | Pending |
-| ENHANCE-03 | Reading time | 3 | Pending |
-| ENHANCE-04 | Copy code button | 3 | Pending |
+| ENHANCE-01 | Full-text search | 3 | Complete |
+| ENHANCE-02 | Table of contents | 3 | Complete |
+| ENHANCE-03 | Reading time | 3 | Complete |
+| ENHANCE-04 | Copy code button | 3 | Complete |
 
 ## Notes
 
