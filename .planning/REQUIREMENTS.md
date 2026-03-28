@@ -14,10 +14,10 @@
 | ORG-01 | Phase 2 | Complete |
 | ORG-02 | Phase 2 | Complete |
 | ORG-03 | Phase 2 | Complete |
-| ENHANCE-01 | Phase 3 | Pending |
-| ENHANCE-02 | Phase 3 | Pending |
-| ENHANCE-03 | Phase 3 | Pending |
-| ENHANCE-04 | Phase 3 | Pending |
+| ENHANCE-01 | Phase 3 | Complete |
+| ENHANCE-02 | Phase 3 | Complete |
+| ENHANCE-03 | Phase 3 | Complete |
+| ENHANCE-04 | Phase 3 | Complete |
 
 ---
 

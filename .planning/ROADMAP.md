@@ -6,7 +6,7 @@
 |---|-------|------|--------------|------------------|
 | 1 | Core Blog | 1/1 | Complete   | 2026-03-27 |
 | 2 | Organization | Content discovery and navigation | Complete    | 2026-03-28 |
-| 3 | Enhancements | User experience improvements | ENHANCE-01, ENHANCE-02, ENHANCE-03, ENHANCE-04 | 4 |
+| 3 | Enhancements | 2/2 | Complete   | 2026-03-28 |
 
 ---
 
@@ -94,7 +94,7 @@
 - Add copy-to-clipboard button to code blocks
 - Add "previous/next post" navigation
 
-**Plans:** 2/2 plans
+**Plans:** 2/2 plans complete
 
 **Plan list:**
 - [x] 03-enhancements/03-01-PLAN.md -- Infrastructure: Install dependencies, create remark plugin, create 4 components
