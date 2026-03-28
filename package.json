@@ -13,6 +13,9 @@
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.5.1",
     "astro": "^4.0.0",
+    "mdast-util-to-string": "^4.0.0",
+    "pagefind": "^1.4.0",
+    "reading-time": "^1.5.0",
     "sharp": "^0.33.0"
   }
 }
