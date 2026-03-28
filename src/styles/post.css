@@ -88,6 +88,31 @@ article.post h3 { font-size: 1.25rem; }
 
 .post-content pre {
   margin: var(--space-4) 0;
+  overflow-x: auto;
+}
+
+/* Custom scrollbar for code blocks - subtle & elegant */
+.post-content pre::-webkit-scrollbar {
+  height: 6px;
+}
+
+.post-content pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.post-content pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.post-content pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Firefox */
+.post-content pre {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
 
 .post-content a {
@@ -117,4 +142,57 @@ article.post h3 { font-size: 1.25rem; }
 
 .back-link:hover {
   color: var(--accent-hover);
+}
+
+/* Copy button styles */
+.copy-button {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+article.post pre:hover .copy-button {
+  opacity: 1;
+}
+
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.copy-button .check-icon {
+  display: none;
+}
+
+.copy-button.copied {
+  background: rgba(88, 166, 255, 0.2);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.copy-button.copied .copy-icon {
+  display: none;
+}
+
+.copy-button.copied .check-icon {
+  display: block;
+}
+
+.copy-button.error {
+  background: rgba(248, 81, 73, 0.2);
+  border-color: #f85149;
+  color: #f85149;
 }

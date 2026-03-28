@@ -38,13 +38,36 @@
     margin-bottom: var(--space-6);
   }
 
-  /* Override Pagefind styles to match theme */
+  /* ===== Search Input ===== */
   :global(.pagefind-ui__search-input) {
     background: var(--bg-secondary) !important;
     border: 1px solid var(--border) !important;
     color: var(--text-primary) !important;
     border-radius: var(--radius-md) !important;
     padding: var(--space-3) var(--space-4) !important;
+    font-size: 1rem !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+  }
+
+  :global(.pagefind-ui__search-input:focus) {
+    outline: none !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15) !important;
+  }
+
+  :global(.pagefind-ui__search-input::placeholder) {
+    color: var(--text-secondary) !important;
+    opacity: 0.7;
+  }
+
+  /* Hide clear button */
+  :global(.pagefind-ui__search-clear) {
+    display: none !important;
+  }
+
+  /* ===== Search Results ===== */
+  :global(.pagefind-ui__results) {
+    padding: 0 !important;
   }
 
   :global(.pagefind-ui__result) {
@@ -52,18 +75,107 @@
     border: 1px solid var(--border) !important;
     border-radius: var(--radius-md) !important;
     margin-bottom: var(--space-3) !important;
+    overflow: hidden !important;
+    transition: all 0.2s ease !important;
+  }
+
+  :global(.pagefind-ui__result:hover) {
+    border-color: var(--accent) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  :global(.pagefind-ui__result a) {
     padding: var(--space-4) !important;
+    display: block !important;
+    text-decoration: none !important;
   }
 
   :global(.pagefind-ui__result-title) {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    margin: 0 0 var(--space-2) 0 !important;
+    transition: color 0.2s ease !important;
+  }
+
+  :global(.pagefind-ui__result:hover .pagefind-ui__result-title) {
     color: var(--accent) !important;
   }
 
   :global(.pagefind-ui__result-excerpt) {
+    font-size: 0.875rem !important;
     color: var(--text-secondary) !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
   }
 
-  :global(.pagefind-ui__search-clear) {
+  :global(.pagefind-ui__result-excerpt mark) {
+    background: rgba(88, 166, 255, 0.2) !important;
+    color: var(--accent) !important;
+    padding: 0.1em 0.3em !important;
+    border-radius: 3px !important;
+    font-weight: 500 !important;
+  }
+
+  :global(.pagefind-ui__result-link) {
+    background-image: none !important;
+  }
+
+  :global(.pagefind-ui__result-nested) {
+    padding-left: 1rem !important;
+    margin-top: 0.5rem !important;
+    border-left: 2px solid var(--border) !important;
+  }
+
+  /* Hide message */
+  :global(.pagefind-ui__message) {
+    display: none !important;
+  }
+
+  /* ===== Load More Button ===== */
+  :global(.pagefind-ui__button) {
+    margin-top: var(--space-4) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--space-3) var(--space-6) !important;
+    font-size: 0.875rem !important;
     color: var(--text-secondary) !important;
+    background: transparent !important;
+    width: auto !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    letter-spacing: 0.02em;
+  }
+
+  :global(.pagefind-ui__button:hover) {
+    color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    background: rgba(88, 166, 255, 0.1) !important;
+  }
+
+  :global(.pagefind-ui__button:active) {
+    transform: scale(0.98);
+  }
+
+  /* Loading spinner */
+  :global(.pagefind-ui__loading) {
+    width: 20px !important;
+    height: 20px !important;
+    border: 2px solid var(--border) !important;
+    border-top-color: var(--accent) !important;
+    border-radius: 50% !important;
+    animation: spin 0.8s linear infinite !important;
+    margin: var(--space-4) auto !important;
+    display: block !important;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 </style>
