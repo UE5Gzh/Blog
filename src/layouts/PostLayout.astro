@@ -1,21 +1,40 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import '../styles/post.css';
+import TableOfContents from '../components/TableOfContents.astro';
+import PostNavigation from '../components/PostNavigation.astro';
+import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   title: string;
   date: Date;
   description: string;
   tags: string[];
+  headings?: { depth: number; slug: string; text: string }[];
+  minutesRead?: string;
+  posts?: CollectionEntry<'posts'>[];
+  currentSlug?: string;
 }
 
-const { title, date, description, tags } = Astro.props;
+const {
+  title,
+  date,
+  description,
+  tags,
+  headings = [],
+  minutesRead,
+  posts = [],
+  currentSlug
+} = Astro.props;
 
 const formattedDate = new Date(date).toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric'
 });
+
+// Filter headings for TOC (H2 and H3 only)
+const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 ---
 
 <BaseLayout title={title} description={description}>
@@ -39,6 +58,15 @@ const formattedDate = new Date(date).toLocaleDateString('en-US', {
           </svg>
           {formattedDate}
         </time>
+        {minutesRead && (
+          <span class="reading-time">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            {minutesRead}
+          </span>
+        )}
         {tags && tags.length > 0 && (
           <div class="tags">
             {tags.map(tag => (
@@ -47,10 +75,44 @@ const formattedDate = new Date(date).toLocaleDateString('en-US', {
           </div>
         )}
       </div>
+
+      {/* Table of Contents - only show if 3+ headings */}
+      {tocHeadings.length >= 3 && <TableOfContents headings={tocHeadings} />}
     </header>
 
     <div class="post-content">
       <slot />
     </div>
+
+    {/* Previous/Next Navigation */}
+    {posts.length > 0 && currentSlug && (
+      <PostNavigation posts={posts} currentSlug={currentSlug} />
+    )}
   </article>
 </BaseLayout>
+
+{/* Copy button initialization - runs on every page load including view transitions */}
+<script>
+  // Run on initial load
+  if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', () => {
+      if ((window as any).addCopyButtons) {
+        (window as any).addCopyButtons();
+      }
+    });
+  }
+  // Re-run after view transitions (page navigation)
+  document.addEventListener('astro:page-load', () => {
+    if ((window as any).addCopyButtons) {
+      (window as any).addCopyButtons();
+    }
+  });
+</script>
+
+<style>
+  .reading-time {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-secondary);
+  }
+</style>

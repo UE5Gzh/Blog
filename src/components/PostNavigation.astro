@@ -1,0 +1,100 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+  currentSlug: string;
+}
+
+const { posts, currentSlug } = Astro.props;
+
+// Sort posts by date descending
+const sortedPosts = [...posts].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// Find current post index
+const currentIndex = sortedPosts.findIndex(post => post.slug === currentSlug);
+
+// Get previous and next posts
+const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+---
+
+<nav class="post-navigation">
+  <div class="nav-item prev">
+    {prevPost && (
+      <a href={`/posts/${prevPost.slug}`}>
+        <span class="nav-label">Previous</span>
+        <span class="nav-title">{prevPost.data.title}</span>
+      </a>
+    )}
+  </div>
+  <div class="nav-item next">
+    {nextPost && (
+      <a href={`/posts/${nextPost.slug}`}>
+        <span class="nav-label">Next</span>
+        <span class="nav-title">{nextPost.data.title}</span>
+      </a>
+    )}
+  </div>
+</nav>
+
+<style>
+  .post-navigation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border, #e5e5e5);
+  }
+
+  .nav-item {
+    display: flex;
+  }
+
+  .nav-item.prev {
+    justify-content: flex-start;
+  }
+
+  .nav-item.next {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .nav-item a {
+    text-decoration: none;
+    color: inherit;
+    max-width: 250px;
+  }
+
+  .nav-item a:hover .nav-title {
+    color: var(--accent, #3b82f6);
+  }
+
+  .nav-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  .nav-title {
+    display: block;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: color 0.2s;
+  }
+
+  @media (max-width: 640px) {
+    .post-navigation {
+      grid-template-columns: 1fr;
+    }
+
+    .nav-item.next {
+      justify-content: flex-start;
+      text-align: left;
+    }
+  }
+</style>
