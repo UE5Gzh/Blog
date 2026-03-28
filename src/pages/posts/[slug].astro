@@ -13,7 +13,15 @@ export async function getStaticPaths() {
 
 // Get the post entry
 const { post } = Astro.props;
-const { Content } = await post.render();
+
+// Render to get headings and reading time
+const { Content, headings, remarkPluginFrontmatter } = await post.render();
+
+// Get all posts for navigation
+const allPosts = await getCollection('posts');
+
+// Extract reading time from remark plugin frontmatter
+const minutesRead = remarkPluginFrontmatter?.minutesRead;
 ---
 
 <PostLayout
@@ -21,6 +29,10 @@ const { Content } = await post.render();
   date={post.data.date}
   description={post.data.description}
   tags={post.data.tags}
+  headings={headings}
+  minutesRead={minutesRead}
+  posts={allPosts}
+  currentSlug={post.slug}
 >
   <Content />
 </PostLayout>
