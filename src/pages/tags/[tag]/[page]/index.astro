@@ -1,0 +1,136 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import PostCard from '../../../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const PAGE_SIZE = 9;
+  const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+  const tags = [...new Set(allPosts.flatMap(post => post.data.tags || []))];
+
+  const paths = [];
+
+  for (const tag of tags) {
+    const filteredPosts = allPosts
+      .filter(post => post.data.tags && post.data.tags.includes(tag))
+      .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+    const totalPages = Math.ceil(filteredPosts.length / PAGE_SIZE);
+
+    // Pages 2 and onwards
+    for (let i = 2; i <= totalPages; i++) {
+      paths.push({
+        params: { tag, page: String(i) },
+        props: { tag, posts: filteredPosts, totalPages, currentPage: i, PAGE_SIZE },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const PAGE_SIZE = 9;
+const { tag, posts, totalPages, currentPage } = Astro.props;
+const start = (currentPage - 1) * PAGE_SIZE;
+const end = start + PAGE_SIZE;
+const pagePosts = posts.slice(start, end);
+
+const prevUrl = currentPage === 2
+  ? `/tags/${tag}`
+  : `/tags/${tag}/${currentPage - 1}`;
+const nextUrl = currentPage < totalPages ? `/tags/${tag}/${currentPage + 1}` : null;
+---
+
+<BaseLayout title={`Tag: ${tag}`} description={`Posts tagged with: ${tag}`}>
+  <section class="tag-header">
+    <h1>Tag: {tag}</h1>
+    <p class="post-count">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+  </section>
+
+  <section class="posts-section">
+    {pagePosts.length > 0 ? (
+      <div class="post-grid">
+        {pagePosts.map(post => (
+          <PostCard post={post} />
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <h2>No posts with this tag</h2>
+        <p>Check back soon for new content!</p>
+      </div>
+    )}
+
+    {/* Pagination */}
+    {totalPages > 1 && (
+      <div class="pagination">
+        {prevUrl ? (
+          <a href={prevUrl} class="page-link">Previous</a>
+        ) : <span class="page-link disabled">Previous</span>}
+
+        <span class="page-info">Page {currentPage} of {totalPages}</span>
+
+        {nextUrl ? (
+          <a href={nextUrl} class="page-link">Next</a>
+        ) : <span class="page-link disabled">Next</span>}
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .tag-header {
+    text-align: center;
+    padding: var(--space-8) 0;
+    margin-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tag-header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .post-count {
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+
+  .posts-section h2 {
+    margin-bottom: var(--space-6);
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+
+  .page-link {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .page-link:not(.disabled):hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .page-link.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .page-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+</style>

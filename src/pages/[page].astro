@@ -1,0 +1,135 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import Search from '../components/Search.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts');
+  const posts = allPosts.filter(post => !post.data.draft);
+  posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+  const PAGE_SIZE = 9;
+  const totalPages = Math.ceil(posts.length / PAGE_SIZE);
+
+  return Array.from({ length: totalPages }, (_, i) => ({
+    params: { page: String(i + 1) },
+    props: { totalPages, currentPage: i + 1, PAGE_SIZE, allPosts: posts },
+  }));
+}
+
+const { totalPages, currentPage, PAGE_SIZE, allPosts } = Astro.props;
+const start = (currentPage - 1) * PAGE_SIZE;
+const end = start + PAGE_SIZE;
+const pagePosts = allPosts.slice(start, end);
+
+const prevUrl = currentPage > 1 ? `/${currentPage - 1}` : null;
+const nextUrl = currentPage < totalPages ? `/${currentPage + 1}` : null;
+---
+
+<BaseLayout title="Home" description="A personal technical blog for sharing programming tutorials and insights">
+  <section class="hero">
+    <h1>Welcome to My Tech Blog</h1>
+    <p class="subtitle">Sharing programming tutorials, insights, and developer experiences</p>
+  </section>
+
+  <Search />
+
+  <section class="posts-section">
+    <h2>Latest Posts</h2>
+    {pagePosts.length > 0 ? (
+      <div class="post-grid">
+        {pagePosts.map(post => (
+          <PostCard post={post} />
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <h2>No posts yet</h2>
+        <p>Check back soon for new content!</p>
+      </div>
+    )}
+
+    {/* Pagination */}
+    <div class="pagination">
+      {prevUrl ? (
+        <a href={prevUrl} class="page-link">Previous</a>
+      ) : <span class="page-link disabled">Previous</span>}
+
+      <span class="page-info">Page {currentPage} of {totalPages}</span>
+
+      {nextUrl ? (
+        <a href={nextUrl} class="page-link">Next</a>
+      ) : <span class="page-link disabled">Next</span>}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: var(--space-8) 0;
+    margin-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .posts-section h2 {
+    margin-bottom: var(--space-6);
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+
+  .page-link {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .page-link:not(.disabled):hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .page-link.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .page-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 640px) {
+    .hero h1 {
+      font-size: 1.75rem;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+    }
+  }
+</style>
