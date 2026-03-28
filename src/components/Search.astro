@@ -61,8 +61,12 @@
     opacity: 0.7;
   }
 
-  /* Hide clear button */
+  /* Hide search icon (伪元素) and clear button */
   :global(.pagefind-ui__search-clear) {
+    display: none !important;
+  }
+
+  :global(.pagefind-ui__form::before) {
     display: none !important;
   }
 
