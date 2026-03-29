@@ -187,7 +187,10 @@
   },
   "active": "3e5eb5b4590f3854",
   "lastOpenFiles": [
+<<<<<<< HEAD
     "posts/openclaw-ai-assistant.md",
+=======
+>>>>>>> a7c7797273f13106f6d7759bc0dc8076ebaaee2b
     "posts/announcement-blog-launch.md",
     "posts/algorithm-binary-search-tree.md",
     "posts/first-post.md",
@@ -195,6 +198,10 @@
     "posts/mass-practical-guide.md",
     "posts/ue5-world-partition.md",
     "posts/unity6-srp-hdrp-urp.md",
+<<<<<<< HEAD
+=======
+    "posts/openclaw-ai-assistant.md",
+>>>>>>> a7c7797273f13106f6d7759bc0dc8076ebaaee2b
     "posts/gas-gameplay-ability-system.md",
     "Templater/blog-post-template.md",
     "Templater/USAGE_GUIDE.md",
