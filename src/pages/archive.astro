@@ -21,96 +21,55 @@ const archive = posts.reduce((acc, post) => {
 }, {});
 
 const years = Object.keys(archive).sort((a, b) => Number(b) - Number(a));
+const latestYear = years[0];
 
 function getYearPostCount(year: number | string) {
   return Object.values(archive[year]).reduce((sum, monthPosts) => sum + monthPosts.length, 0);
 }
-
-const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                    'July', 'August', 'September', 'October', 'November', 'December'];
 ---
 
 <BaseLayout title="Archive" description="Archive of all blog posts by date">
-  <section class="archive-hero">
-    <div class="hero-content">
-      <span class="hero-label">Timeline</span>
-      <h1>Archive</h1>
-      <p class="post-count">{posts.length} articles published</p>
-    </div>
-    <div class="hero-decoration">
-      <div class="decoration-ring ring-1"></div>
-      <div class="decoration-ring ring-2"></div>
-      <div class="decoration-ring ring-3"></div>
-    </div>
+  <section class="archive-header">
+    <h1>Archive</h1>
+    <p class="post-count">{posts.length} {posts.length === 1 ? 'post' : 'posts'} total</p>
   </section>
 
-  <section class="timeline-container">
-    <div class="timeline-line"></div>
-
-    {years.map((year, yearIndex) => {
+  <section class="archive-content">
+    {years.map((year) => {
+      const isLatestYear = year === latestYear;
       const yearPostCount = getYearPostCount(year);
-
+      
       return (
-        <div class="timeline-item" data-year={year} data-expanded="false">
-          <div class="timeline-marker">
-            <div class="marker-dot">
-              <span class="marker-year">{year}</span>
-            </div>
-            <div class="marker-connector"></div>
-          </div>
-
-          <div class="timeline-content">
-            <button class="year-header" aria-expanded="false">
-              <div class="year-info">
-                <span class="year-label">{year}</span>
-                <span class="year-title">Year in Review</span>
-              </div>
-              <div class="year-meta">
-                <span class="post-count-badge">{yearPostCount} posts</span>
-                <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </div>
-            </button>
-
-            <div class="year-months">
-              {Object.keys(archive[year])
-                .sort((a, b) => Number(b) - Number(a))
-                .map((month) => {
-                  const monthPosts = archive[year][Number(month)];
-                  const monthName = monthNames[Number(month)];
-
-                  return (
-                    <div class="month-group" data-month={month} data-expanded="false">
-                      <button class="month-header" aria-expanded="false">
-                        <div class="month-info">
-                          <svg class="month-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                          </svg>
-                          <span class="month-name">{monthName}</span>
-                        </div>
-                        <span class="month-count">{monthPosts.length}</span>
-                      </button>
-                      <ul class="post-list">
-                        {monthPosts.map((post, postIndex) => (
-                          <li class="post-item" style={`--delay: ${postIndex * 40}ms`}>
-                            <a href={`/posts/${post.slug}`} class="post-link">
-                              <span class="post-date">
-                                {new Date(post.data.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                              </span>
-                              <span class="post-title">{post.data.title}</span>
-                              <svg class="post-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <polyline points="12 5 19 12 12 19"></polyline>
-                              </svg>
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  );
-                })}
-            </div>
+        <div class="year-section" data-year={year} class:list={[{ collapsed: !isLatestYear }]}>
+          <button class="year-toggle" aria-expanded={isLatestYear}>
+            <svg class="chevron-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+            <span class="year-title">{year}</span>
+            <span class="year-post-count">{yearPostCount}</span>
+          </button>
+          <div class="year-content">
+            {Object.keys(archive[year])
+              .sort((a, b) => Number(b) - Number(a))
+              .map(month => (
+                <div class="month-section">
+                  <h3 class="month-title">
+                    {new Date(Number(year), Number(month), 1).toLocaleDateString('en-US', { month: 'long' })}
+                  </h3>
+                  <ul class="post-list">
+                    {archive[year][Number(month)].map(post => (
+                      <li>
+                        <a href={`/posts/${post.slug}`} class="post-link">
+                          <span class="post-title">{post.data.title}</span>
+                          <span class="post-date">
+                            {new Date(post.data.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
           </div>
         </div>
       );
@@ -119,630 +78,192 @@ const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
 </BaseLayout>
 
 <script>
-  function initTimeline() {
-    // Year toggle handlers
-    const items = document.querySelectorAll('.timeline-item');
-
-    items.forEach(item => {
-      const yearHeader = item.querySelector('.year-header');
-      if (!yearHeader) return;
-
-      yearHeader.addEventListener('click', () => {
-        const isExpanded = yearHeader.getAttribute('aria-expanded') === 'true';
-        yearHeader.setAttribute('aria-expanded', String(!isExpanded));
-        item.setAttribute('data-expanded', String(!isExpanded));
-
-        // Animate posts on expand
-        if (!isExpanded) {
-          const posts = item.querySelectorAll('.post-item');
-          posts.forEach((post, i) => {
-            (post as HTMLElement).style.animationDelay = `${i * 40}ms`;
-            post.classList.add('animate-in');
-          });
-        }
-      });
-    });
-
-    // Month toggle handlers
-    const monthGroups = document.querySelectorAll('.month-group');
-
-    monthGroups.forEach(group => {
-      const monthHeader = group.querySelector('.month-header');
-      if (!monthHeader) return;
-
-      monthHeader.addEventListener('click', (e) => {
-        // Don't toggle if clicking the post link
-        if ((e.target as HTMLElement).closest('.post-link')) return;
-
-        const isExpanded = group.getAttribute('data-expanded') === 'true';
-        group.setAttribute('data-expanded', String(!isExpanded));
-
-        // Animate posts on expand
-        if (!isExpanded) {
-          const posts = group.querySelectorAll('.post-item');
-          posts.forEach((post, i) => {
-            (post as HTMLElement).style.animationDelay = `${i * 40}ms`;
-            post.classList.add('animate-in');
-          });
-        }
+  function initArchiveToggle() {
+    document.querySelectorAll('.year-toggle').forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const section = toggle.closest('.year-section');
+        if (!section) return;
+        
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!isExpanded));
+        section.classList.toggle('collapsed');
       });
     });
   }
 
-  initTimeline();
-  document.addEventListener('astro:page-load', initTimeline);
+  initArchiveToggle();
+  document.addEventListener('astro:page-load', initArchiveToggle);
 </script>
 
 <style>
-  /* ===== Variables ===== */
-  :root {
-    --timeline-accent: #6366f1;
-    --timeline-accent-glow: rgba(99, 102, 241, 0.3);
-    --timeline-line: #e2e8f0;
-    --timeline-dark-line: #334155;
-  }
-
-  /* ===== Hero Section ===== */
-  .archive-hero {
-    position: relative;
-    padding: 4rem 2rem 3rem;
+  .archive-header {
     text-align: center;
-    overflow: hidden;
-    background: linear-gradient(180deg, var(--bg-secondary) 0%, transparent 100%);
-    margin-bottom: 3rem;
+    padding: var(--space-8) 0;
+    margin-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border);
   }
 
-  .hero-content {
-    position: relative;
-    z-index: 1;
-  }
-
-  .hero-label {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--timeline-accent);
-    background: var(--timeline-accent-glow);
-    padding: 0.35rem 1rem;
-    border-radius: 20px;
-    margin-bottom: 1rem;
-  }
-
-  .archive-hero h1 {
-    font-size: clamp(2.5rem, 8vw, 4rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    margin-bottom: 0.75rem;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--timeline-accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .archive-header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--space-3);
   }
 
   .post-count {
-    font-size: 1.1rem;
     color: var(--text-secondary);
-    font-weight: 400;
+    font-size: 0.95rem;
   }
 
-  .hero-decoration {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-
-  .decoration-ring {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px solid var(--timeline-accent-glow);
-    animation: pulse-ring 4s ease-in-out infinite;
-  }
-
-  .ring-1 {
-    width: 300px;
-    height: 300px;
-    top: -150px;
-    left: -150px;
-    animation-delay: 0s;
-  }
-
-  .ring-2 {
-    width: 500px;
-    height: 500px;
-    top: -250px;
-    left: -250px;
-    animation-delay: 0.5s;
-  }
-
-  .ring-3 {
-    width: 700px;
-    height: 700px;
-    top: -350px;
-    left: -350px;
-    animation-delay: 1s;
-  }
-
-  @keyframes pulse-ring {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.05); }
-  }
-
-  /* ===== Timeline Container ===== */
-  .timeline-container {
-    position: relative;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 1.5rem 4rem;
-  }
-
-  .timeline-line {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(180deg,
-      var(--timeline-accent) 0%,
-      var(--timeline-line) 20%,
-      var(--timeline-line) 80%,
-      var(--timeline-accent) 100%);
-    transform: translateX(-50%);
-  }
-
-  /* ===== Timeline Item ===== */
-  .timeline-item {
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr 32px 1fr;
-    gap: 0 1.5rem;
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: fadeSlideIn 0.6s ease forwards;
-  }
-
-  .timeline-item:nth-child(1) { animation-delay: 0.1s; }
-  .timeline-item:nth-child(2) { animation-delay: 0.2s; }
-  .timeline-item:nth-child(3) { animation-delay: 0.3s; }
-  .timeline-item:nth-child(4) { animation-delay: 0.4s; }
-  .timeline-item:nth-child(5) { animation-delay: 0.5s; }
-
-  @keyframes fadeSlideIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* ===== Timeline Marker ===== */
-  .timeline-marker {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    grid-column: 2;
-  }
-
-  .marker-dot {
-    width: 64px;
-    height: 64px;
-    background: var(--bg-primary);
-    border: 3px solid var(--timeline-line);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-    transition: all 0.3s ease;
-  }
-
-  .timeline-item[data-expanded="true"] .marker-dot {
-    background: var(--timeline-accent);
-    border-color: var(--timeline-accent);
-    box-shadow: 0 0 0 4px var(--bg-primary), 0 0 30px var(--timeline-accent-glow);
-  }
-
-  .timeline-item[data-expanded="true"] .marker-dot .marker-year {
-    color: white;
-  }
-
-  .marker-year {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    letter-spacing: 0.05em;
-    transition: color 0.3s ease;
-  }
-
-  .marker-connector {
-    flex: 1;
-    width: 2px;
-    background: var(--timeline-line);
-    margin-top: 0.5rem;
-  }
-
-  .timeline-item:last-child .marker-connector {
-    display: none;
-  }
-
-  /* ===== Timeline Content ===== */
-  .timeline-content {
-    grid-column: 3;
-    grid-row: 1;
-  }
-
-  .timeline-item:nth-child(odd) .timeline-content {
-    grid-column: 1;
-    grid-row: 1;
-    text-align: right;
-  }
-
-  .timeline-item:nth-child(odd) .year-header {
-    flex-direction: row-reverse;
-  }
-
-  .timeline-item:nth-child(odd) .post-link {
-    flex-direction: row-reverse;
-  }
-
-  .timeline-item:nth-child(odd) .post-arrow {
-    transform: rotate(180deg);
-  }
-
-  .timeline-item:nth-child(odd) .month-header {
-    flex-direction: row-reverse;
-  }
-
-  .timeline-item:nth-child(odd) .month-info {
-    flex-direction: row-reverse;
-  }
-
-  .timeline-item:nth-child(odd) .month-group[data-expanded="true"] .month-chevron {
-    transform: rotate(-180deg);
-  }
-
-  .timeline-item:nth-child(odd) .post-item.animate-in {
-    animation-name: postSlideInLeft;
-  }
-
-  /* ===== Year Header ===== */
-  .year-header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.25rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
+  .year-section {
+    margin-bottom: var(--space-4);
     border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-  }
-
-  .year-header:hover {
-    border-color: var(--timeline-accent);
-    box-shadow: 0 4px 20px var(--timeline-accent-glow);
-    transform: translateY(-2px);
-  }
-
-  .timeline-item[data-expanded="true"] .year-header {
-    background: linear-gradient(135deg, var(--timeline-accent) 0%, #818cf8 100%);
-    border-color: transparent;
-  }
-
-  .timeline-item[data-expanded="true"] .year-header:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px var(--timeline-accent-glow);
-  }
-
-  .year-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .year-label {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: -0.02em;
-  }
-
-  .timeline-item[data-expanded="true"] .year-label {
-    color: white;
-  }
-
-  .year-title {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
-
-  .timeline-item[data-expanded="true"] .year-title {
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .year-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .post-count-badge {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.3rem 0.75rem;
-    background: var(--bg-primary);
-    border-radius: 20px;
-    color: var(--timeline-accent);
-  }
-
-  .timeline-item[data-expanded="true"] .post-count-badge {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-  }
-
-  .chevron-icon {
-    color: var(--text-secondary);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .timeline-item[data-expanded="true"] .chevron-icon {
-    color: white;
-    transform: rotate(180deg);
-  }
-
-  /* ===== Year Months (Collapsible) ===== */
-  .year-months {
-    display: grid;
-    gap: 1rem;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-  }
-
-  .timeline-item[data-expanded="true"] .year-months {
-    max-height: 2000px;
-    opacity: 1;
-  }
-
-  /* ===== Month Group ===== */
-  .month-group {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 10px;
     overflow: hidden;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .month-group:hover {
-    border-color: var(--timeline-accent);
-    box-shadow: 0 2px 12px var(--timeline-accent-glow);
+  .year-section:hover {
+    border-color: rgba(88, 166, 255, 0.3);
   }
 
-  .month-header {
+  .year-toggle {
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0.75rem 1rem;
+    gap: var(--space-3);
+    padding: var(--space-5) var(--space-6);
     background: transparent;
     border: none;
     cursor: pointer;
+    text-align: left;
     transition: background-color 0.2s ease;
   }
 
-  .month-header:hover {
-    background: rgba(99, 102, 241, 0.08);
+  .year-toggle:hover {
+    background: rgba(88, 166, 255, 0.05);
   }
 
-  .month-info {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  .chevron-icon {
+    color: var(--accent);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
   }
 
-  .month-chevron {
-    color: var(--text-secondary);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
+  .year-section.collapsed .chevron-icon {
+    transform: rotate(-90deg);
   }
 
-  .month-group[data-expanded="true"] .month-chevron {
-    transform: rotate(180deg);
-    color: var(--timeline-accent);
-  }
-
-  .month-name {
-    font-size: 0.85rem;
+  .year-title {
+    font-size: 1.375rem;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
     color: var(--text-primary);
+    letter-spacing: -0.01em;
   }
 
-  .month-group[data-expanded="true"] .month-name {
-    color: var(--timeline-accent);
-  }
-
-  .month-count {
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 0.2rem 0.5rem;
-    background: var(--timeline-accent-glow);
-    border-radius: 10px;
-    color: var(--timeline-accent);
-    transition: all 0.2s ease;
-  }
-
-  .month-group[data-expanded="false"] .month-count {
-    background: var(--bg-primary);
+  .year-post-count {
+    font-size: 0.8rem;
     color: var(--text-secondary);
+    background: var(--bg-primary);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    margin-left: auto;
   }
 
-  /* ===== Post List (Collapsible) ===== */
+  .year-content {
+    padding: 0 var(--space-6) var(--space-5);
+    max-height: 3000px;
+    opacity: 1;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                padding 0.3s ease, 
+                opacity 0.25s ease;
+  }
+
+  .year-section.collapsed .year-content {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  .month-section {
+    margin-bottom: var(--space-5);
+  }
+
+  .month-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .month-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border);
+  }
+
   .post-list {
     list-style: none;
-    padding: 0.5rem 0 0.75rem;
+    padding: 0;
     margin: 0;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
   }
 
-  .month-group[data-expanded="true"] .post-list {
-    max-height: 1000px;
-    opacity: 1;
-  }
-
-  .post-item {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-
-  .post-item.animate-in {
-    animation: postSlideIn 0.4s ease forwards;
-    animation-delay: var(--delay, 0ms);
-  }
-
-  @keyframes postSlideIn {
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes postSlideInLeft {
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  .post-list li {
+    margin-bottom: 2px;
   }
 
   .post-link {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.6rem 0.75rem;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: var(--space-3) var(--space-4);
     color: var(--text-primary);
     text-decoration: none;
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   .post-link:hover {
-    background: var(--timeline-accent-glow);
-    color: var(--timeline-accent);
-    transform: translateX(4px);
-  }
-
-  .timeline-item:nth-child(odd) .post-link:hover {
-    transform: translateX(-4px);
-  }
-
-  .post-date {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    min-width: 60px;
-    flex-shrink: 0;
+    background: rgba(88, 166, 255, 0.08);
+    color: var(--accent);
   }
 
   .post-title {
-    font-size: 0.9rem;
-    font-weight: 500;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.95rem;
+    line-height: 1.4;
   }
 
-  .post-arrow {
+  .post-date {
+    font-size: 0.8rem;
     color: var(--text-secondary);
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: all 0.2s ease;
     flex-shrink: 0;
+    margin-left: var(--space-4);
   }
 
-  .post-link:hover .post-arrow {
-    opacity: 1;
-    transform: translateX(0);
-    color: var(--timeline-accent);
-  }
-
-  /* ===== Mobile Responsive ===== */
-  @media (max-width: 768px) {
-    .timeline-line {
-      left: 20px;
+  @media (max-width: 640px) {
+    .year-toggle {
+      padding: var(--space-4) var(--space-4);
     }
 
-    .timeline-item {
-      grid-template-columns: 40px 1fr;
-      gap: 0 1rem;
+    .year-title {
+      font-size: 1.2rem;
     }
 
-    .timeline-marker {
-      grid-column: 1;
-      grid-row: 1;
+    .year-content {
+      padding: 0 var(--space-4) var(--space-4);
     }
 
-    .marker-dot {
-      width: 40px;
-      height: 40px;
+    .post-link {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-1);
     }
 
-    .marker-year {
-      font-size: 0.6rem;
-    }
-
-    .marker-connector {
-      display: none;
-    }
-
-    .timeline-content,
-    .timeline-item:nth-child(odd) .timeline-content {
-      grid-column: 2;
-      grid-row: 1;
-      text-align: left;
-    }
-
-    .timeline-item:nth-child(odd) .year-header {
-      flex-direction: row;
-    }
-
-    .timeline-item:nth-child(odd) .post-link {
-      flex-direction: row;
-    }
-
-    .timeline-item:nth-child(odd) .post-arrow {
-      transform: none;
-    }
-
-    .timeline-item:nth-child(odd) .month-header {
-      flex-direction: row;
-    }
-
-    .year-label {
-      font-size: 1.25rem;
-    }
-
-    .archive-hero h1 {
-      font-size: 2.5rem;
-    }
-
-    .ring-1, .ring-2, .ring-3 {
-      display: none;
+    .post-date {
+      margin-left: 0;
     }
   }
 </style>
