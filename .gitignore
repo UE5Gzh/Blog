@@ -29,3 +29,6 @@ Thumbs.db
 # Misc
 *.log
 npm-debug.log*
+
+# Obsidian
+.obsidian/
