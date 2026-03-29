@@ -35,10 +35,7 @@
       "Bash(npx playwright:*)",
       "Bash(npx -y pagefind --help)",
       "Bash(cd:*)",
-      "Bash(taskkill //F //IM node.exe)",
-      "Bash(vercel:*)",
-      "Bash(ping:*)",
-      "Bash(nslookup:*)"
+      "Bash(taskkill //F //IM node.exe)"
     ]
   }
 }

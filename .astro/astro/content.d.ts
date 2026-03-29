@@ -198,6 +198,13 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
+"gas-gameplay-ability-system.md": {
+	id: "gas-gameplay-ability-system.md";
+  slug: "gas-gameplay-ability-system";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
 "graphics-pbr-shading.md": {
 	id: "graphics-pbr-shading.md";
   slug: "graphics-pbr-shading";
@@ -208,6 +215,13 @@ declare module 'astro:content' {
 "mass-practical-guide.md": {
 	id: "mass-practical-guide.md";
   slug: "mass-practical-guide";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"openclaw-ai-assistant.md": {
+	id: "openclaw-ai-assistant.md";
+  slug: "openclaw-ai-assistant";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">

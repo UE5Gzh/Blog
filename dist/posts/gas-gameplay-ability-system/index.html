@@ -1,0 +1,187 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="深入解析Unity的Gameplay Ability System，了解如何构建可扩展的游戏能力系统"><title>Unity GAS游戏能力系统完全指南 | Tech Blog</title><link rel="stylesheet" href="/_astro/_slug_.DQZpC6BC.css">
+<link rel="stylesheet" href="/_astro/_slug_.D1Ffo2Ur.css"><script type="module">function c(){const e=document.getElementById("reading-progress");if(!e)return;const t=document.querySelector(".post");if(!t)return;const r=t.offsetTop,o=t.offsetHeight,s=window.innerHeight,a=window.scrollY,n=r-s,d=r+o-s,u=Math.max(0,Math.min(1,(a-n)/(d-n)));e.style.width=`${u*100}%`}window.addEventListener("scroll",c,{passive:!0});c();function i(){document.querySelectorAll("article.post pre").forEach(e=>{if(e.querySelector(".copy-button"))return;const t=document.createElement("button");t.className="copy-button",t.setAttribute("aria-label","Copy code to clipboard"),t.innerHTML=`
+      <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    `,e.style.position="relative",e.appendChild(t),t.addEventListener("click",()=>{const o=e.querySelector("code")?.textContent||"";navigator.clipboard.writeText(o).then(()=>{t.classList.add("copied"),setTimeout(()=>{t.classList.remove("copied")},2e3)}).catch(()=>{t.classList.add("error"),setTimeout(()=>{t.classList.remove("error")},2e3)})})})}i();document.addEventListener("astro:page-load",i);function l(){const e=document.querySelectorAll("#toc-list a"),t=document.querySelectorAll("article.post h2, article.post h3");let r="";t.forEach(o=>{o.getBoundingClientRect().top<=120&&(r=o.id)}),e.forEach(o=>{const s=o.getAttribute("data-slug");o.classList.toggle("active",s===r)})}window.addEventListener("scroll",l,{passive:!0});l();
+</script></head> <body> <header class="header" data-astro-cid-3ef6ksr2> <div class="header-inner" data-astro-cid-3ef6ksr2> <a href="/" class="logo" data-astro-cid-3ef6ksr2>Unity GAS游戏能力系统完全指南</a> <nav class="nav" data-astro-cid-3ef6ksr2> <a href="/" data-astro-cid-3ef6ksr2>Home</a> <a href="/about" data-astro-cid-3ef6ksr2>Author</a> <!-- Categories Dropdown --> <div class="dropdown" data-astro-cid-3ef6ksr2> <button class="dropdown-trigger" aria-haspopup="true" data-astro-cid-3ef6ksr2>
+Categories
+</button> <div class="dropdown-menu" data-astro-cid-3ef6ksr2> <a href="/categories/General" data-astro-cid-3ef6ksr2>General</a> <a href="/categories/Unreal Engine" data-astro-cid-3ef6ksr2>Unreal Engine</a> <a href="/categories/Unity" data-astro-cid-3ef6ksr2>Unity</a> <a href="/categories/Algorithm" data-astro-cid-3ef6ksr2>Algorithm</a> <a href="/categories/Graphics" data-astro-cid-3ef6ksr2>Graphics</a> <a href="/categories/AI" data-astro-cid-3ef6ksr2>AI</a> <a href="/categories/Others" data-astro-cid-3ef6ksr2>Others</a> </div> </div> <!-- Tags Dropdown --> <div class="dropdown" data-astro-cid-3ef6ksr2> <button class="dropdown-trigger" aria-haspopup="true" data-astro-cid-3ef6ksr2>
+Tags
+</button> <div class="dropdown-menu" data-astro-cid-3ef6ksr2> <a href="/tags/Announcement" data-astro-cid-3ef6ksr2>Announcement</a> <a href="/tags/UE5" data-astro-cid-3ef6ksr2>UE5</a> <a href="/tags/Unity6" data-astro-cid-3ef6ksr2>Unity6</a> <a href="/tags/GAS" data-astro-cid-3ef6ksr2>GAS</a> <a href="/tags/Mass" data-astro-cid-3ef6ksr2>Mass</a> <a href="/tags/Shader" data-astro-cid-3ef6ksr2>Shader</a> <a href="/tags/OpenClaw" data-astro-cid-3ef6ksr2>OpenClaw</a> </div> </div> <!-- Archive Link --> <a href="/archive" data-astro-cid-3ef6ksr2>Archive</a> </nav> </div> </header>  <main>   <div class="reading-progress" id="reading-progress" data-astro-cid-gjtny2mx></div> <div class="post-layout has-toc" data-astro-cid-gjtny2mx> <!-- Left Sidebar - Table of Contents (fixed) --> <aside class="post-sidebar-left" data-astro-cid-gjtny2mx> <div class="toc-sticky" data-astro-cid-gjtny2mx> <nav class="toc-sidebar" data-astro-cid-xvrfupwn> <h2 class="toc-title" data-astro-cid-xvrfupwn> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-xvrfupwn> <line x1="8" y1="6" x2="21" y2="6" data-astro-cid-xvrfupwn></line> <line x1="8" y1="12" x2="21" y2="12" data-astro-cid-xvrfupwn></line> <line x1="8" y1="18" x2="21" y2="18" data-astro-cid-xvrfupwn></line> <line x1="3" y1="6" x2="3.01" y2="6" data-astro-cid-xvrfupwn></line> <line x1="3" y1="12" x2="3.01" y2="12" data-astro-cid-xvrfupwn></line> <line x1="3" y1="18" x2="3.01" y2="18" data-astro-cid-xvrfupwn></line> </svg>
+On this page
+</h2> <ul class="toc-list" id="toc-list" data-astro-cid-xvrfupwn> <li class="toc-item depth-2" data-astro-cid-xvrfupwn> <a href="#什么是gas" data-slug="什么是gas" data-astro-cid-xvrfupwn>什么是GAS</a> </li><li class="toc-item depth-2" data-astro-cid-xvrfupwn> <a href="#核心概念" data-slug="核心概念" data-astro-cid-xvrfupwn>核心概念</a> </li><li class="toc-item depth-3" data-astro-cid-xvrfupwn> <a href="#四要素" data-slug="四要素" data-astro-cid-xvrfupwn>四要素</a> </li><li class="toc-item depth-3" data-astro-cid-xvrfupwn> <a href="#系统架构" data-slug="系统架构" data-astro-cid-xvrfupwn>系统架构</a> </li><li class="toc-item depth-2" data-astro-cid-xvrfupwn> <a href="#attributeset" data-slug="attributeset" data-astro-cid-xvrfupwn>AttributeSet</a> </li><li class="toc-item depth-3" data-astro-cid-xvrfupwn> <a href="#定义属性" data-slug="定义属性" data-astro-cid-xvrfupwn>定义属性</a> </li><li class="toc-item depth-3" data-astro-cid-xvrfupwn> <a href="#预修改量计算" data-slug="预修改量计算" data-astro-cid-xvrfupwn>预修改量计算</a> </li><li class="toc-item depth-2" data-astro-cid-xvrfupwn> <a href="#ability" data-slug="ability" data-astro-cid-xvrfupwn>Ability</a> </li><li class="toc-item depth-3" data-astro-cid-xvrfupwn> <a href="#创建技能" data-slug="创建技能" data-astro-cid-xvrfupwn>创建技能</a> </li><li class="toc-item depth-2" data-astro-cid-xvrfupwn> <a href="#gameplayeffect" data-slug="gameplayeffect" data-astro-cid-xvrfupwn>GameplayEffect</a> </li><li class="toc-item depth-3" data-astro-cid-xvrfupwn> <a href="#即时效果" data-slug="即时效果" data-astro-cid-xvrfupwn>即时效果</a> </li><li class="toc-item depth-3" data-astro-cid-xvrfupwn> <a href="#持续效果" data-slug="持续效果" data-astro-cid-xvrfupwn>持续效果</a> </li><li class="toc-item depth-2" data-astro-cid-xvrfupwn> <a href="#gameplaytags" data-slug="gameplaytags" data-astro-cid-xvrfupwn>GameplayTags</a> </li><li class="toc-item depth-3" data-astro-cid-xvrfupwn> <a href="#标签层级" data-slug="标签层级" data-astro-cid-xvrfupwn>标签层级</a> </li><li class="toc-item depth-3" data-astro-cid-xvrfupwn> <a href="#标签查询" data-slug="标签查询" data-astro-cid-xvrfupwn>标签查询</a> </li><li class="toc-item depth-2" data-astro-cid-xvrfupwn> <a href="#配合ecsdots" data-slug="配合ecsdots" data-astro-cid-xvrfupwn>配合ECS/DOTS</a> </li><li class="toc-item depth-3" data-astro-cid-xvrfupwn> <a href="#结构化数据" data-slug="结构化数据" data-astro-cid-xvrfupwn>结构化数据</a> </li><li class="toc-item depth-2" data-astro-cid-xvrfupwn> <a href="#性能优化" data-slug="性能优化" data-astro-cid-xvrfupwn>性能优化</a> </li><li class="toc-item depth-2" data-astro-cid-xvrfupwn> <a href="#总结" data-slug="总结" data-astro-cid-xvrfupwn>总结</a> </li> </ul> </nav>   </div> </aside> <!-- Main Content --> <article class="post" data-astro-cid-gjtny2mx> <!-- Breadcrumb --> <nav class="breadcrumb" data-astro-cid-gjtny2mx> <a href="/" data-astro-cid-gjtny2mx>Home</a> <span class="separator" data-astro-cid-gjtny2mx>/</span> <span class="current" data-astro-cid-gjtny2mx>Post</span> </nav> <header class="post-header" data-astro-cid-gjtny2mx> <h1 class="post-title" data-astro-cid-gjtny2mx>Unity GAS游戏能力系统完全指南</h1> <div class="post-meta" data-astro-cid-gjtny2mx> <div class="meta-item" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-gjtny2mx> <rect x="3" y="4" width="18" height="18" rx="2" ry="2" data-astro-cid-gjtny2mx></rect> <line x1="16" y1="2" x2="16" y2="6" data-astro-cid-gjtny2mx></line> <line x1="8" y1="2" x2="8" y2="6" data-astro-cid-gjtny2mx></line> <line x1="3" y1="10" x2="21" y2="10" data-astro-cid-gjtny2mx></line> </svg> <time datetime="2026-03-28T00:00:00.000Z" data-astro-cid-gjtny2mx>March 28, 2026</time> </div> <div class="meta-item" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-gjtny2mx> <circle cx="12" cy="12" r="10" data-astro-cid-gjtny2mx></circle> <polyline points="12 6 12 12 16 14" data-astro-cid-gjtny2mx></polyline> </svg> <span data-astro-cid-gjtny2mx>3 min read</span> </div> </div> <div class="post-tags" data-astro-cid-gjtny2mx> <span class="post-tag" data-astro-cid-gjtny2mx>GAS</span> </div> <!-- Decorative divider --> <div class="header-divider" data-astro-cid-gjtny2mx> <span class="divider-line" data-astro-cid-gjtny2mx></span> <span class="divider-icon" data-astro-cid-gjtny2mx> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-astro-cid-gjtny2mx> <path d="M12 2L2 7l10 5 10-5-10-5z" data-astro-cid-gjtny2mx></path> <path d="M2 17l10 5 10-5" data-astro-cid-gjtny2mx></path> <path d="M2 12l10 5 10-5" data-astro-cid-gjtny2mx></path> </svg> </span> <span class="divider-line" data-astro-cid-gjtny2mx></span> </div> </header> <div class="post-content" data-astro-cid-gjtny2mx>  <h1 id="unity-gas游戏能力系统完全指南">Unity GAS游戏能力系统完全指南</h1>
+<h2 id="什么是gas">什么是GAS</h2>
+<p>GAS (Gameplay Ability System) 是Epic为UE4/UE5开发的框架，后被移植到Unity，是构建复杂游戏能力系统的利器。</p>
+<h2 id="核心概念">核心概念</h2>
+<h3 id="四要素">四要素</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>概念</th><th>说明</th></tr></thead><tbody><tr><td><strong>Ability</strong></td><td>技能本身</td></tr><tr><td><strong>Attribute</strong></td><td>属性数值</td></tr><tr><td><strong>GameplayEffect</strong></td><td>效果（Buff/Debuff）</td></tr><tr><td><strong>GameplayTags</strong></td><td>标签系统</td></tr></tbody></table>
+<h3 id="系统架构">系统架构</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>┌─────────────────────────────────────┐</span></span>
+<span class="line"><span>│           AbilitySystemComponent      │</span></span>
+<span class="line"><span>├─────────────────────────────────────┤</span></span>
+<span class="line"><span>│  Granted Abilities                   │</span></span>
+<span class="line"><span>│  Active Effects                     │</span></span>
+<span class="line"><span>│  Owned Tags                         │</span></span>
+<span class="line"><span>│  AttributeSets                      │</span></span>
+<span class="line"><span>└─────────────────────────────────────┘</span></span>
+<span class="line"><span></span></span></code></pre>
+<h2 id="attributeset">AttributeSet</h2>
+<h3 id="定义属性">定义属性</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#D4D4D4">[</span><span style="color:#4EC9B0">System</span><span style="color:#D4D4D4">.</span><span style="color:#4EC9B0">Serializable</span><span style="color:#D4D4D4">]</span></span>
+<span class="line"><span style="color:#569CD6">public</span><span style="color:#569CD6"> class</span><span style="color:#4EC9B0"> CharacterAttributeSet</span><span style="color:#D4D4D4"> : </span><span style="color:#4EC9B0">AttributeSet</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#D4D4D4">    [</span><span style="color:#4EC9B0">FGameplayAttribute</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">HealthKey</span><span style="color:#D4D4D4">)]</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#4EC9B0"> GameplayAttributeData</span><span style="color:#9CDCFE"> Health</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#D4D4D4">    [</span><span style="color:#4EC9B0">FGameplayAttribute</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">ManaKey</span><span style="color:#D4D4D4">)]</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#4EC9B0"> GameplayAttributeData</span><span style="color:#9CDCFE"> Mana</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#D4D4D4">    [</span><span style="color:#4EC9B0">FGameplayAttribute</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">StrengthKey</span><span style="color:#D4D4D4">)]</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#4EC9B0"> GameplayAttributeData</span><span style="color:#9CDCFE"> Strength</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h3 id="预修改量计算">预修改量计算</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#569CD6">public</span><span style="color:#569CD6"> class</span><span style="color:#4EC9B0"> CharacterAttributeSet</span><span style="color:#D4D4D4"> : </span><span style="color:#4EC9B0">AttributeSet</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#569CD6"> float</span><span style="color:#DCDCAA"> GetPreModifierDamage</span><span style="color:#D4D4D4">(</span><span style="color:#569CD6">float</span><span style="color:#9CDCFE"> BaseDamage</span><span style="color:#D4D4D4">)</span></span>
+<span class="line"><span style="color:#D4D4D4">    {</span></span>
+<span class="line"><span style="color:#6A9955">        // 计算实际伤害 = 基础伤害 * (1 + 增伤%)</span></span>
+<span class="line"><span style="color:#C586C0">        return</span><span style="color:#9CDCFE"> BaseDamage</span><span style="color:#D4D4D4"> * (</span><span style="color:#B5CEA8">1.0f</span><span style="color:#D4D4D4"> + </span><span style="color:#9CDCFE">DamageBonus</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">GetCurrentValue</span><span style="color:#D4D4D4">());</span></span>
+<span class="line"><span style="color:#D4D4D4">    }</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="ability">Ability</h2>
+<h3 id="创建技能">创建技能</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#D4D4D4">[</span><span style="color:#4EC9B0">CreateAssetMenu</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">menuName</span><span style="color:#D4D4D4"> = </span><span style="color:#CE9178">"Ability/Fireball"</span><span style="color:#D4D4D4">, </span><span style="color:#9CDCFE">fileName</span><span style="color:#D4D4D4"> = </span><span style="color:#CE9178">"FireballAbility"</span><span style="color:#D4D4D4">)]</span></span>
+<span class="line"><span style="color:#569CD6">public</span><span style="color:#569CD6"> class</span><span style="color:#4EC9B0"> FireballAbility</span><span style="color:#D4D4D4"> : </span><span style="color:#4EC9B0">GameplayAbility</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#4EC9B0"> GameplayEffectContextHandle</span><span style="color:#9CDCFE"> EffectContext</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#569CD6"> override</span><span style="color:#569CD6"> void</span><span style="color:#DCDCAA"> ActivateAbility</span><span style="color:#D4D4D4">(</span></span>
+<span class="line"><span style="color:#4EC9B0">        GameplayAbilitySpecHandle</span><span style="color:#9CDCFE"> Handle</span><span style="color:#D4D4D4">,</span></span>
+<span class="line"><span style="color:#4EC9B0">        GameplayAbilityActorInfo</span><span style="color:#9CDCFE"> ActorInfo</span><span style="color:#D4D4D4">,</span></span>
+<span class="line"><span style="color:#4EC9B0">        GameplayAbilityActivationInfo</span><span style="color:#9CDCFE"> ActivationInfo</span><span style="color:#D4D4D4">,</span></span>
+<span class="line"><span style="color:#D4D4D4">        GameplayEventData* EventData)</span></span>
+<span class="line"><span style="color:#D4D4D4">    {</span></span>
+<span class="line"><span style="color:#6A9955">        // 施法逻辑</span></span>
+<span class="line"><span style="color:#DCDCAA">        ApplyGameplayEffectSpecToOwner</span><span style="color:#D4D4D4">(</span></span>
+<span class="line"><span style="color:#9CDCFE">            Handle</span><span style="color:#D4D4D4">, </span></span>
+<span class="line"><span style="color:#9CDCFE">            AbilitySystemComponent</span><span style="color:#D4D4D4">-></span><span style="color:#DCDCAA">MakeOutgoingSpec</span><span style="color:#D4D4D4">(</span></span>
+<span class="line"><span style="color:#9CDCFE">                FireballEffect</span><span style="color:#D4D4D4">, </span></span>
+<span class="line"><span style="color:#DCDCAA">                GetAbilityLevel</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">Handle</span><span style="color:#D4D4D4">),</span></span>
+<span class="line"><span style="color:#9CDCFE">                EffectContext</span></span>
+<span class="line"><span style="color:#D4D4D4">            )</span></span>
+<span class="line"><span style="color:#D4D4D4">        );</span></span>
+<span class="line"><span style="color:#D4D4D4">    }</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="gameplayeffect">GameplayEffect</h2>
+<h3 id="即时效果">即时效果</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#D4D4D4">[</span><span style="color:#4EC9B0">CreateAssetMenu</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">menuName</span><span style="color:#D4D4D4"> = </span><span style="color:#CE9178">"Effect/Instant/Damage"</span><span style="color:#D4D4D4">)]</span></span>
+<span class="line"><span style="color:#569CD6">public</span><span style="color:#569CD6"> class</span><span style="color:#4EC9B0"> DamageEffect</span><span style="color:#D4D4D4"> : </span><span style="color:#4EC9B0">GameplayEffect</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#569CD6"> float</span><span style="color:#9CDCFE"> DamageAmount</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">    </span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#569CD6"> override</span><span style="color:#569CD6"> float</span><span style="color:#DCDCAA"> GetMagnitude</span><span style="color:#D4D4D4">(</span></span>
+<span class="line"><span style="color:#4EC9B0">        GameplayEffectSpec</span><span style="color:#9CDCFE"> Spec</span><span style="color:#D4D4D4">)</span></span>
+<span class="line"><span style="color:#D4D4D4">    {</span></span>
+<span class="line"><span style="color:#C586C0">        return</span><span style="color:#9CDCFE"> DamageAmount</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">    }</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h3 id="持续效果">持续效果</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#6A9955">// Buff持续时间配置</span></span>
+<span class="line"><span style="color:#D4D4D4">[</span><span style="color:#4EC9B0">CreateAssetMenu</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">menuName</span><span style="color:#D4D4D4"> = </span><span style="color:#CE9178">"Effect/Duration/Regen"</span><span style="color:#D4D4D4">)]</span></span>
+<span class="line"><span style="color:#569CD6">public</span><span style="color:#569CD6"> class</span><span style="color:#4EC9B0"> HealthRegenEffect</span><span style="color:#D4D4D4"> : </span><span style="color:#4EC9B0">GameplayEffect</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#569CD6"> float</span><span style="color:#9CDCFE"> TickRate</span><span style="color:#D4D4D4"> = </span><span style="color:#B5CEA8">1.0f</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#569CD6"> float</span><span style="color:#9CDCFE"> HealPerTick</span><span style="color:#D4D4D4"> = </span><span style="color:#B5CEA8">10.0f</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#569CD6"> float</span><span style="color:#9CDCFE"> Duration</span><span style="color:#D4D4D4"> = </span><span style="color:#B5CEA8">10.0f</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="gameplaytags">GameplayTags</h2>
+<h3 id="标签层级">标签层级</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Combat.Attack.Fire</span></span>
+<span class="line"><span>Combat.Attack.Ice</span></span>
+<span class="line"><span>Combat.Defense.Shield</span></span>
+<span class="line"><span></span></span></code></pre>
+<h3 id="标签查询">标签查询</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#4EC9B0">FGameplayTagContainer</span><span style="color:#9CDCFE"> OwnerTags</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#9CDCFE">AbilitySystemComponent</span><span style="color:#D4D4D4">-></span><span style="color:#DCDCAA">GetOwnedGameplayTags</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">OwnerTags</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A9955">// 查询是否拥有特定标签</span></span>
+<span class="line"><span style="color:#C586C0">if</span><span style="color:#D4D4D4"> (</span><span style="color:#9CDCFE">OwnerTags</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">HasTag</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">FGameplayTag</span><span style="color:#D4D4D4">::</span><span style="color:#DCDCAA">RequestGameplayTag</span><span style="color:#D4D4D4">(</span><span style="color:#CE9178">"Combat.Attack.Fire"</span><span style="color:#D4D4D4">)))</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#6A9955">    // 火系攻击触发</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="配合ecsdots">配合ECS/DOTS</h2>
+<h3 id="结构化数据">结构化数据</h3>
+<pre class="astro-code dark-plus" style="background-color:#1E1E1E;color:#D4D4D4; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#569CD6">public</span><span style="color:#569CD6"> struct</span><span style="color:#4EC9B0"> AbilityComponentData</span><span style="color:#D4D4D4"> : </span><span style="color:#4EC9B0">IComponentData</span></span>
+<span class="line"><span style="color:#D4D4D4">{</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#569CD6"> float</span><span style="color:#9CDCFE"> CooldownRemaining</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#569CD6"> float</span><span style="color:#9CDCFE"> ManaCost</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#569CD6">    public</span><span style="color:#569CD6"> bool</span><span style="color:#9CDCFE"> bIsActive</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span>
+<span class="line"></span></code></pre>
+<h2 id="性能优化">性能优化</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>优化项</th><th>方法</th></tr></thead><tbody><tr><td>批量处理</td><td>按Tag分组Ability</td></tr><tr><td>缓存结果</td><td>避免重复计算</td></tr><tr><td>对象池</td><td>复用Effect对象</td></tr></tbody></table>
+<h2 id="总结">总结</h2>
+<p>GAS是构建复杂RPG/MOBA游戏能力系统的强大框架，需要深入理解其设计理念才能用好。</p>  </div>  <nav class="post-navigation" data-astro-cid-lhwu4qwf><div class="nav-header" data-astro-cid-lhwu4qwf><span class="nav-label" data-astro-cid-lhwu4qwf>Continue Reading</span></div><div class="nav-links" data-astro-cid-lhwu4qwf><a href="/posts/graphics-pbr-shading" class="nav-card prev" data-astro-cid-lhwu4qwf><span class="nav-direction" data-astro-cid-lhwu4qwf><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-lhwu4qwf><line x1="19" y1="12" x2="5" y2="12" data-astro-cid-lhwu4qwf></line><polyline points="12 19 5 12 12 5" data-astro-cid-lhwu4qwf></polyline></svg>
+Previous
+</span><span class="nav-title" data-astro-cid-lhwu4qwf>PBR着色器原理解析</span></a><a href="/posts/algorithm-binary-search-tree" class="nav-card next" data-astro-cid-lhwu4qwf><span class="nav-title" data-astro-cid-lhwu4qwf>深入理解二叉搜索树</span><span class="nav-direction" data-astro-cid-lhwu4qwf>
+Next
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-lhwu4qwf><line x1="5" y1="12" x2="19" y2="12" data-astro-cid-lhwu4qwf></line><polyline points="12 5 19 12 12 19" data-astro-cid-lhwu4qwf></polyline></svg></span></a></div></nav> </article> </div>  </main> <footer class="footer" data-astro-cid-sz7xmlte> <div class="footer-inner" data-astro-cid-sz7xmlte> <p class="copyright" data-astro-cid-sz7xmlte>
+&copy; 2026 Personal Tech Blog. All rights reserved.
+</p> </div> </footer>  </body></html>     
